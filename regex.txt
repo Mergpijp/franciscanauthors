@@ -1,0 +1,98 @@
+regex literature: ^literature|literary
+regex editions: ^(E|e)diti?ons|(E|e)dities
+
+
+literature & editions
+literature
+literature:
+literature/editions
+Literature
+Salimbene’s literary legacy.
+editions
+editions/manuscripts
+editions and literature
+editions/literature
+editions:
+editions/editions
+editions and sources:
+editions and sources
+editions and music
+editions
+editions (needs to be augmented & corrected!)
+editons
+Editions and manuscripts
+Editions
+editions (incomplete)
+Editions/manuscripts
+edities en studies:
+edities:
+Edities:
+
+
+manuscripts
+manuscripts and editions
+manuscripts/.editions
+
+
+mss
+
+
+manuscripts/editions
+manuscripts & editions
+
+
+
+Manuscripts/editions
+manusripts
+manuscrips
+vitae/biographies
+manuscripten
+Augustinus de Ceballos (Agustín de Ceballos, fl.
+early 17th cent.)
+
+manucripts
+(feast 28 september)
+Manuscripts and editions
+B.>>
+vitae
+
+
+manuscript
+
+Manuscripts
+literatuur:
+works/editions
+manuscripts:
+
+
+(opera omnia editions, separate editions of individual works, translations)
+>>>
+>
+
+
+
+manuscripts/edition
+manuscipts
+manusripts/editions
+surviving works
+Primo, vita bona
+Latin manuscripts
+edition
+manuscipts/editions
+notice
+
+manuscrips/editions
+
+manuscripts (predominantly based on Brady and Bougerol)
+manuscipts & editions
+manuscripts/partial editions
+manuscripts/editions/literature
+Some manuscripts
+
+
+Partial editions:
+
+manuscript\nand editions
+
+manuscripts\nand editions.
+Not a Franciscan friar but member of the Order of Minims
