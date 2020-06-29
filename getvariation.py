@@ -15,11 +15,11 @@ def get_bold(tag):
             test = tag.find('b')
         else:
             return None
-        if test is None or test == -1:
+        if test is None or test == -1 or isinstance(test,int):
             if tag.nextSibling is None:
                 return None
             else:
-                tag = tag.nextSibling.nextSibling
+                tag = tag.nextSibling#.nextSibling
         elif test.name == 'b':
             return test.text.strip()
 
@@ -48,8 +48,8 @@ for let in letters:
 
     for lemma in lemmas:
         tag = lemma.find('p')
-        if tag and tag.nextSibling:
-            tag = tag.nextSibling.nextSibling
+        if tag: #and tag.nextSibling:
+            tag = tag.nextSibling #.nextSibling
         else:
             continue
         value = get_bold(tag)

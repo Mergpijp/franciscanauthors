@@ -1,0 +1,112 @@
+regex literature: ^(l|L)iterature|literary|^literatuur
+regex editions: ^(E|e)diti?ons?|(E|e)dities|Partial editions|works/editions
+regex manuscripts: ^(m|M)anus?c?r?ipt?s?|(Latin|Some) manuscripts|mss
+regex vitea : ^vitae
+
+
+literature & editions
+literature
+literature:
+literature/editions
+Literature
+Salimbene’s literary legacy.
+literatuur:
+
+editions
+editions/manuscripts
+editions and literature
+editions/literature
+editions:
+editions/editions
+editions and sources:
+editions and sources
+editions and music
+editions
+(opera omnia editions, separate editions of individual works, translations)
+editions (needs to be augmented & corrected!)
+editons
+Editions and manuscripts
+Editions
+editions (incomplete)
+Editions/manuscripts
+edities en studies:
+edities:
+Edities:
+Partial editions:
+works/editions
+edition
+
+manuscripts
+manuscripts and editions
+manuscripts/.editions
+manuscripts/editions
+manuscripts & editions
+Manuscripts/editions
+manusripts
+manuscrips
+manuscripten
+Manuscripts and editions
+manucripts
+manuscript
+Manuscripts
+manuscripts:
+manuscripts/edition
+manuscipts
+manusripts/editions
+Latin manuscripts
+manuscipts/editions
+manuscrips/editions
+manuscripts (predominantly based on Brady and Bougerol)
+manuscipts & editions
+manuscripts/partial editions
+manuscripts/editions/literature
+Some manuscripts
+manuscript\nand editions
+manuscripts\nand editions.
+mss
+
+vitae/biographies
+vitae
+
+
+
+
+
+Augustinus de Ceballos (Agustín de Ceballos, fl.
+early 17th cent.)
+
+
+(feast 28 september)
+
+B.>>
+
+
+
+
+
+
+
+
+
+
+
+>>>
+>
+
+
+
+
+
+surviving works
+Primo, vita bona
+
+
+
+notice
+
+
+
+
+
+
+Not a Franciscan friar but member of the Order of Minims
