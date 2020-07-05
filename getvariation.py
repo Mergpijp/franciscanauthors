@@ -4,24 +4,27 @@ import bs4
 import json
 from collections import OrderedDict
 
-letters = list(map(chr, range(97, 118)))
+letters = list(map(chr, range(97, 98)))
 bold_list = list()
 filename = '../franciscanauthors_data/heads.txt'
 
 
-def get_bold(tag):
+def get_bold(tag, bold_list):
     while True:
         if tag:
             test = tag.find('b')
         else:
-            return None
+            return bold_list
         if test is None or test == -1 or isinstance(test,int):
             if tag.nextSibling is None:
-                return None
+                return bold_list
             else:
-                tag = tag.nextSibling#.nextSibling
+                tag = tag.nextSibling  #.nextSibling
         elif test.name == 'b':
-            return test.text.strip()
+            text = test.text.strip()
+            if text not in bold_list:
+                bold_list.append(text)
+            tag = tag.nextSibling
 
 
 for let in letters:
@@ -48,14 +51,30 @@ for let in letters:
 
     for lemma in lemmas:
         tag = lemma.find('p')
-        if tag: #and tag.nextSibling:
-            tag = tag.nextSibling #.nextSibling
-        else:
+        while tag is not None:
+            test = tag.find('b')
+            if test is None or test == -1 or isinstance(test,int):
+                if tag: #and tag.nextSibling:
+                    tag = tag.nextSibling #.nextSibling
+                else:
+                    break
+            elif test.name == 'b':
+                if tag:
+                    tag = tag.nextSibling
+                break
+        if tag is None:
             continue
-        value = get_bold(tag)
-        if value is not None and not value in bold_list:
-            bold_list.append(value)
 
+        bold_list = get_bold(tag, bold_list)
+        '''
+        while True:
+            value = get_bold(tag)
+            if value is not None:
+                if not value in bold_list:
+                    bold_list.append(value)
+            else:
+                break
+        '''
 with open(filename, mode="w") as outfile:  # also, tried mode="rb"
     for s in bold_list:
         outfile.write("%s\n" % s)
