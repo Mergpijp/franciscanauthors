@@ -6,7 +6,14 @@ from collections import OrderedDict
 
 letters = list(map(chr, range(97, 118)))
 anonymous = ['fraanony.htm']
+
 pk = 1
+pk_manuscripts = 1
+pk_manuscripts_editions = 1
+pk_editions = 1
+pk_translations = 1
+pk_editions_translations = 1
+final_data = list()
 
 for let in letters:
 #for any in anonymous:
@@ -105,28 +112,67 @@ for let in letters:
                      literature_bold, literature))
 
     def helper(title):
-        if title == 'editions':
+        match = re.search('^(L|l)iterature((?!(/|&)).)*$|literatuur', title)
+        if match:
             return 2
-        elif title == 'editions/literature':
+        match = re.search('^(E|e)diti?ons?((?!(/| and )).)*$|(E|e)dities((?!(/|en)).)*$|^Partial editions|editions/editions', title)
+        if match:
             return 3
-        elif title == 'manuscripts':
+        match = re.search('^(m|M)anus?c?r?ipt?s?((?!(/|&| and )).)*$|(Latin|Some) manuscripts|mss|manuscripts \(predominantly based on Brady and Bougerol\)' \
+                          , title)
+        if match:
             return 4
-        elif title == 'translations':
+        match = re.search('(m|M)anus(c?)(r?)ip(t?)s(/| and | & |/partial )(.?)edition(s?)((?!(/literature)).)*$|(E|e)ditions(/| and )manuscripts' \
+                          , title)
+        if match:
             return 5
-        elif title == 'literature (selection)':
+        match = re.search('^editions( and |/)literature|^literature( and |/| & )editions', title)
+        if match:
             return 6
-        elif title == 'literature':
+        match = re.search('^vitae?((?!(biographies)).)*$', title)
+        if match:
             return 7
-        elif title == 'manuscripts/editions':
+        match = re.search('^vitae/biographies', title)
+        if match:
             return 8
-        else:
-            return -1
+        match = re.search('^works/editions', title)
+        if match:
+            return 9
+        match = re.search('^editions and music', title)
+        if match:
+            return 10
+        match = re.search('^surviving works', title)
+        if match:
+            return 11
+        match = re.search('^edities en studies^', title)
+        if match:
+            return 12
+        match = re.search('^manuscripts/editions/literature', title)
+        if match:
+            return 13
+        match = re.search('^Salimbene’s literary legacy.', title)
+        if match:
+            return 14
+        match = re.search('^editions and translations', title)
+        if match:
+            return 15
+        match = re.search('^studies', title)
+        if match:
+            return 16
+        match = re.search('^translations((?!(edities)).)*$', title)
+        if match:
+            return 17
+        match = re.search('^Primo, vita bona', title)
+        if match:
+            return 18
+        return -1
 
     structured_data = list()
 
     for name_bold, name, manuscripts_bold, manuscripts, edition_bold, edition, translation_bold, translation, literature_bold, literature in data:
 
-        data_list = [name_bold, name, 'null', 'null', 'null', 'null', 'null', 'null', 'null']
+        data_list = [name_bold, name, 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null' \
+                     , 'null', 'null', 'null', 'null', 'null', 'null']
 
         index = helper(manuscripts_bold)
         if index != -1:
@@ -143,13 +189,10 @@ for let in letters:
 
         structured_data.append(tuple(data_list))
 
-
-    final_data = list()
-
-
-
-
-    for idx, (name_bold, name, edition, edition_literature, manuscripts, translations, literature_selection, literature, manuscripts_editions) in enumerate(structured_data):
+    for idx, (name_bold, name, literature, editions, manuscripts, manuscripts_editions, literature_editions, \
+              vitea, vitea_biographies, works_editions, editions_music, surviving_works, edities_studies, \
+              manuscripts_editions_literature, salimbenes_literary_legacy, editions_translations, \
+              studies, translations, primo_vita_bona) in enumerate(structured_data):
         name_date = 'null'
         name_original = 'null'
         x = re.search('\(([^\)]+)\)', name_bold)
@@ -175,19 +218,75 @@ for let in letters:
                 name_date = x
         personalia = name
         manuscripts = manuscripts.splitlines()
-        editions_literature = edition_literature.splitlines()
+
+        list_manuscripts = []
+        for mscr in manuscripts:
+            my_dict = dict()
+            my_dict['model'] = 'franciscanauthors.manuscript_record'
+            my_dict['pk'] = pk_manuscripts
+            list_manuscripts.append(pk_manuscripts)
+            pk_manuscripts += 1
+            f = [('record', mscr)]
+            my_dict['fields'] = dict(f)
+            final_data.append(my_dict)
+
         manuscripts_editions = manuscripts_editions.splitlines()
-        editions = edition.splitlines()
-        literature = literature.splitlines()
-        literature_selection = literature_selection.splitlines()
+        list_manuscripts_editions = []
+
+        for mscre in manuscripts_editions:
+            my_dict = dict()
+            my_dict['model'] = 'franciscanauthors.manuscript_edition_record'
+            my_dict['pk'] = pk_manuscripts_editions
+            list_manuscripts.append(pk_manuscripts_editions)
+            pk_manuscripts_editions += 1
+            f = [('record', mscre)]
+            my_dict['fields'] = dict(f)
+            final_data.append(my_dict)
+
+        editions = editions.splitlines()
+        list_editions = []
+        for edition in editions:
+            my_dict = dict()
+            my_dict['model'] = 'franciscanauthors.edition_record'
+            my_dict['pk'] = pk_editions
+            list_manuscripts.append(pk_editions)
+            pk_editions += 1
+            f = [('record', edition)]
+            my_dict['fields'] = dict(f)
+            final_data.append(my_dict)
+
         translations = translations.splitlines()
+        list_translations = []
+        for translation in translations:
+            my_dict = dict()
+            my_dict['model'] = 'franciscanauthors.translation_record'
+            my_dict['pk'] = pk_translations
+            list_manuscripts.append(pk_translations)
+            pk_translations += 1
+            f = [('record', translation)]
+            my_dict['fields'] = dict(f)
+            final_data.append(my_dict)
+
+        editions_translations = editions_translations.splitlines()
+        list_editions_translations = []
+        for et in editions_translations:
+            my_dict = dict()
+            my_dict['model'] = 'franciscanauthors.edition_translation_record'
+            my_dict['pk'] = pk_editions_translations
+            list_manuscripts.append(pk_editions_translations)
+            pk_editions_translations += 1
+            f = [('record', et)]
+            my_dict['fields'] = dict(f)
+            final_data.append(my_dict)
 
 
         l = [('name_bold', name_bold) , ('name_date', name_date), ('name_original', name_original), ('name_latin', name_latin), ('personalia', personalia), \
-             ('manuscripts', manuscripts), ('translations', translations), ('manuscripts_editions', manuscripts_editions), ('editions', editions), \
-             ('editions_literature', editions_literature), ('literature', literature), ('literature_selection', literature_selection), ('letter', let)]
+             ('literature', literature), ('editions', list_editions), ('manuscripts', list_manuscripts),('manuscripts_editions', list_manuscripts_editions), \
+             ('literature_editions', literature_editions), ('vitea', vitea), ('vitea_biographies', vitea_biographies), ('work_editions', works_editions),\
+             ('editions_music', editions_music), ('surviving works', surviving_works),('edities_studies', edities_studies), \
+             ('manuscripts_editions_literature', manuscripts_editions_literature), ('salimbenes_literary_legacy', salimbenes_literary_legacy), \
+             ('editions_translations', list_editions_translations), ('studies', studies), ('translations', list_translations), ('primo_vita_bona', primo_vita_bona), ('letter', let)]
 
-        #final_data.append(l)
         my_dict = dict()
         my_dict['model'] = 'franciscanauthors.record'
         my_dict['pk'] = pk
@@ -195,8 +294,6 @@ for let in letters:
         my_dict['fields'] = dict(l)
         final_data.append(my_dict)
 
-    #rs = json.dumps(my_dict)
 
-    with open('../franciscanauthors_data/letter'+let+'.json', 'w') as f:
-    #with open('../franciscanauthors_data/' + any + '.json', 'w') as f:
-        json.dump(final_data, f)
+with open('../franciscanauthors_data/fixture_good.json', 'w') as f:
+    json.dump(final_data, f, indent=2)

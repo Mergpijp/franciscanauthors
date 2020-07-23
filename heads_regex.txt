@@ -1,0 +1,108 @@
+regex literature: ^(L|l)iterature((?!(/|&)).)*$|literatuur
+regex editions: ^(E|e)diti?ons?((?!(/| and )).)*$|(E|e)dities((?!(/|en)).)*$|^Partial editions|editions/editions
+regex manuscripts: ^(m|M)anus?c?r?ipt?s?((?!(/|&| and )).)*$|(Latin|Some) manuscripts|mss|manuscripts \(predominantly based on Brady and Bougerol\)
+regex manuscripts/editions: (m|M)anus(c?)(r?)ip(t?)s(/| and | & |/partial )(.?)edition(s?)((?!(/literature)).)*$|(E|e)ditions(/| and )manuscripts
+regex literature/editions: ^editions( and |/)literature|^literature( and |/| & )editions
+regex vitea : ^vitae?((?!(biographies)).)*$
+regex vitea/biographies : ^vitae/biographies
+regex works/editions: ^works/editions
+regex editions and music:^editions and music
+regex suriving works: ^surviving works
+regex edities en studies: ^edities en studies^
+regex manuscripts/editions/literature: ^manuscripts/editions/literature
+regex Salimbene’s literary legacy.: ^Salimbene’s literary legacy.
+regex editions and translations: ^editions and translations
+regex studies: ^studies
+regex translations :  ^translations((?!(edities)).)*$
+regex Primo vita bona: ^^Primo, vita bona
+
+
+literature
+literature:
+
+editions
+
+manuscripts
+mss
+
+manuscripts and editions
+manuscripts/.editions
+editions/manuscripts
+
+editions and literature
+
+
+manuscripts/editions
+manuscripts & editions
+editions/literature
+editions:
+Aloisius Maria Veronensis (Aloisio/Luigi Maria Veronesi/Domenico Frangini, d. 1797)
+literature/editions
+Manuscripts/editions
+manusripts
+manuscrips
+vitae/biographies
+manuscripten
+Augustinus de Ceballos (Agustín de Ceballos, fl.
+early 17th cent.)
+editions/editions
+manucripts
+Basilius de Salon (Basile de Salon, d. 1625)
+(feast 28 september)
+Manuscripts and editions
+Bernardus de Urbino (Bernardo di Urbino/Catelani, fl. 16th cent.)
+vitae
+B.>>
+edities:
+Celestinus de Niort (fl. c. 1650)
+Carolus (Carlo) de Sezze (Carlo Da Sezze/Giancarlo Marchioni, 1613-1670)
+editions and sources:
+manuscript
+editions and sources
+Manuscripts
+literatuur:
+works/editions
+Ermannus Etzen, see Hermannus Etzen (Letter H)
+manuscripts:
+Fabian de Hungaria (14th cent.)
+editions and music
+editions
+(opera omnia editions, separate editions of individual works, translations)
+>>>
+>
+Franciscus de Soriano (Francesco da Soriano/Soriano nel Cimino, ca. 1500-1567)
+editions (needs to be augmented & corrected!)
+Editions and manuscripts
+editons
+manuscripts/edition
+manuscipts
+manusripts/editions
+surviving works
+Primo, vita bona
+Latin manuscripts
+edition
+manuscipts/editions
+notice
+Jacobinus Ferrariensis (floruit late thirteenth century)
+edities en studies:
+manuscrips/editions
+literature & editions
+manuscripts (predominantly based on Brady and Bougerol)
+manuscipts & editions
+Josephus Tobias (Giuseppe Tobia, 1740-1815)
+manuscripts/partial editions
+manuscripts/editions/literature
+Some manuscripts
+Edities:
+Editions
+Partial editions:
+Pablo de Mesa (fl.
+ca. 1640)
+Literature
+Salimbene’s literary legacy.
+manuscripts and editions
+editions (incomplete)
+manuscripts and editions.
+Not a Franciscan friar but member of the Order of Minims
+Ubaldricus Gablinensis (Ubaldricus von Gablingen, fl. 18th cent.)
+Editions/manuscripts
