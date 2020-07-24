@@ -221,6 +221,8 @@ for let in letters:
 
         list_manuscripts = []
         for mscr in manuscripts:
+            if mscr == 'null':
+                break
             my_dict = dict()
             my_dict['model'] = 'franciscanauthors.manuscript_record'
             my_dict['pk'] = pk_manuscripts
@@ -234,10 +236,12 @@ for let in letters:
         list_manuscripts_editions = []
 
         for mscre in manuscripts_editions:
+            if mscre == 'null':
+                break
             my_dict = dict()
             my_dict['model'] = 'franciscanauthors.manuscript_edition_record'
             my_dict['pk'] = pk_manuscripts_editions
-            list_manuscripts.append(pk_manuscripts_editions)
+            list_manuscripts_editions.append(pk_manuscripts_editions)
             pk_manuscripts_editions += 1
             f = [('record', mscre)]
             my_dict['fields'] = dict(f)
@@ -246,10 +250,12 @@ for let in letters:
         editions = editions.splitlines()
         list_editions = []
         for edition in editions:
+            if edition == 'null':
+                break
             my_dict = dict()
             my_dict['model'] = 'franciscanauthors.edition_record'
             my_dict['pk'] = pk_editions
-            list_manuscripts.append(pk_editions)
+            list_editions.append(pk_editions)
             pk_editions += 1
             f = [('record', edition)]
             my_dict['fields'] = dict(f)
@@ -258,10 +264,12 @@ for let in letters:
         translations = translations.splitlines()
         list_translations = []
         for translation in translations:
+            if translation == 'null':
+                break
             my_dict = dict()
             my_dict['model'] = 'franciscanauthors.translation_record'
             my_dict['pk'] = pk_translations
-            list_manuscripts.append(pk_translations)
+            list_translations.append(pk_translations)
             pk_translations += 1
             f = [('record', translation)]
             my_dict['fields'] = dict(f)
@@ -270,10 +278,12 @@ for let in letters:
         editions_translations = editions_translations.splitlines()
         list_editions_translations = []
         for et in editions_translations:
+            if et == 'null':
+                break
             my_dict = dict()
             my_dict['model'] = 'franciscanauthors.edition_translation_record'
             my_dict['pk'] = pk_editions_translations
-            list_manuscripts.append(pk_editions_translations)
+            list_editions_translations.append(pk_editions_translations)
             pk_editions_translations += 1
             f = [('record', et)]
             my_dict['fields'] = dict(f)
