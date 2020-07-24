@@ -224,11 +224,11 @@ for let in letters:
             if mscr == 'null':
                 break
             my_dict = dict()
-            my_dict['model'] = 'franciscanauthors.manuscript_record'
+            my_dict['model'] = 'franciscanauthors_model.manuscript'
             my_dict['pk'] = pk_manuscripts
             list_manuscripts.append(pk_manuscripts)
             pk_manuscripts += 1
-            f = [('record', mscr)]
+            f = [('entry', mscr)]
             my_dict['fields'] = dict(f)
             final_data.append(my_dict)
 
@@ -239,11 +239,11 @@ for let in letters:
             if mscre == 'null':
                 break
             my_dict = dict()
-            my_dict['model'] = 'franciscanauthors.manuscript_edition_record'
+            my_dict['model'] = 'franciscanauthors_model.manuscript_edition'
             my_dict['pk'] = pk_manuscripts_editions
             list_manuscripts_editions.append(pk_manuscripts_editions)
             pk_manuscripts_editions += 1
-            f = [('record', mscre)]
+            f = [('entry', mscre)]
             my_dict['fields'] = dict(f)
             final_data.append(my_dict)
 
@@ -253,11 +253,11 @@ for let in letters:
             if edition == 'null':
                 break
             my_dict = dict()
-            my_dict['model'] = 'franciscanauthors.edition_record'
+            my_dict['model'] = 'franciscanauthors_model.edition'
             my_dict['pk'] = pk_editions
             list_editions.append(pk_editions)
             pk_editions += 1
-            f = [('record', edition)]
+            f = [('entry', edition)]
             my_dict['fields'] = dict(f)
             final_data.append(my_dict)
 
@@ -267,11 +267,11 @@ for let in letters:
             if translation == 'null':
                 break
             my_dict = dict()
-            my_dict['model'] = 'franciscanauthors.translation_record'
+            my_dict['model'] = 'franciscanauthors_model.translation'
             my_dict['pk'] = pk_translations
             list_translations.append(pk_translations)
             pk_translations += 1
-            f = [('record', translation)]
+            f = [('entry', translation)]
             my_dict['fields'] = dict(f)
             final_data.append(my_dict)
 
@@ -281,29 +281,29 @@ for let in letters:
             if et == 'null':
                 break
             my_dict = dict()
-            my_dict['model'] = 'franciscanauthors.edition_translation_record'
+            my_dict['model'] = 'franciscanauthors_model.edition_translation'
             my_dict['pk'] = pk_editions_translations
             list_editions_translations.append(pk_editions_translations)
             pk_editions_translations += 1
-            f = [('record', et)]
+            f = [('entry', et)]
             my_dict['fields'] = dict(f)
             final_data.append(my_dict)
 
 
         l = [('name_bold', name_bold) , ('name_date', name_date), ('name_original', name_original), ('name_latin', name_latin), ('personalia', personalia), \
              ('literature', literature), ('editions', list_editions), ('manuscripts', list_manuscripts),('manuscripts_editions', list_manuscripts_editions), \
-             ('literature_editions', literature_editions), ('vitea', vitea), ('vitea_biographies', vitea_biographies), ('work_editions', works_editions),\
-             ('editions_music', editions_music), ('surviving works', surviving_works),('edities_studies', edities_studies), \
+             ('literature_editions', literature_editions), ('vitea', vitea), ('vitea_biographies', vitea_biographies), ('works_editions', works_editions),\
+             ('editions_music', editions_music), ('surviving_works', surviving_works),('edities_studies', edities_studies), \
              ('manuscripts_editions_literature', manuscripts_editions_literature), ('salimbenes_literary_legacy', salimbenes_literary_legacy), \
              ('editions_translations', list_editions_translations), ('studies', studies), ('translations', list_translations), ('primo_vita_bona', primo_vita_bona), ('letter', let)]
 
         my_dict = dict()
-        my_dict['model'] = 'franciscanauthors.record'
+        my_dict['model'] = 'franciscanauthors_model.record'
         my_dict['pk'] = pk
         pk += 1
         my_dict['fields'] = dict(l)
         final_data.append(my_dict)
 
 
-with open('../franciscanauthors_data/fixture_good.json', 'w') as f:
+with open('../franciscanauthors_data/fixtures/fixture_good.json', 'w') as f:
     json.dump(final_data, f, indent=2)
