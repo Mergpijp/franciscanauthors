@@ -171,8 +171,8 @@ for let in letters:
 
     for name_bold, name, manuscripts_bold, manuscripts, edition_bold, edition, translation_bold, translation, literature_bold, literature in data:
 
-        data_list = [name_bold, name, 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null' \
-                     , 'null', 'null', 'null', 'null', 'null', 'null']
+        data_list = [name_bold, name, None, None, None, None, None, None, None, None, None, None, None \
+                     , None, None, None, None, None, None]
 
         index = helper(manuscripts_bold)
         if index != -1:
@@ -193,8 +193,8 @@ for let in letters:
               vitea, vitea_biographies, works_editions, editions_music, surviving_works, edities_studies, \
               manuscripts_editions_literature, salimbenes_literary_legacy, editions_translations, \
               studies, translations, primo_vita_bona) in enumerate(structured_data):
-        name_date = 'null'
-        name_original = 'null'
+        name_date = None
+        name_original = None
         x = re.search('\(([^\)]+)\)', name_bold)
         if x:
             x = x.group(0)
@@ -202,7 +202,7 @@ for let in letters:
             if name_latin:
                 name_latin = name_latin.group(0)
             else:
-                name_latin = 'null'
+                name_latin = None
             name_date = re.search('(fl\.|d\.)(.*)', x)
             if name_date:
                 substract = name_date.group(0)
@@ -211,83 +211,90 @@ for let in letters:
                 if substract in x:
                     name_original = x.replace(substract, '')
                     if len(name_original) == 1:
-                        name_original = 'null'
+                        name_original = None
                     else:
                         name_original = name_original[1:]
             else:
                 name_date = x
         personalia = name
-        manuscripts = manuscripts.splitlines()
 
         list_manuscripts = []
-        for mscr in manuscripts:
-            if mscr == 'null':
-                break
-            my_dict = dict()
-            my_dict['model'] = 'franciscanauthors_model.manuscript'
-            my_dict['pk'] = pk_manuscripts
-            list_manuscripts.append(pk_manuscripts)
-            pk_manuscripts += 1
-            f = [('entry', mscr)]
-            my_dict['fields'] = dict(f)
-            final_data.append(my_dict)
+        if manuscripts:
+            manuscripts = manuscripts.splitlines()
 
-        manuscripts_editions = manuscripts_editions.splitlines()
+
+            for mscr in manuscripts:
+                if not mscr:
+                    break
+                my_dict = dict()
+                my_dict['model'] = 'franciscanauthors_model.manuscript'
+                my_dict['pk'] = pk_manuscripts
+                list_manuscripts.append(pk_manuscripts)
+                pk_manuscripts += 1
+                f = [('entry', mscr)]
+                my_dict['fields'] = dict(f)
+                final_data.append(my_dict)
+
         list_manuscripts_editions = []
+        if manuscripts_editions:
+            manuscripts_editions = manuscripts_editions.splitlines()
 
-        for mscre in manuscripts_editions:
-            if mscre == 'null':
-                break
-            my_dict = dict()
-            my_dict['model'] = 'franciscanauthors_model.manuscript_edition'
-            my_dict['pk'] = pk_manuscripts_editions
-            list_manuscripts_editions.append(pk_manuscripts_editions)
-            pk_manuscripts_editions += 1
-            f = [('entry', mscre)]
-            my_dict['fields'] = dict(f)
-            final_data.append(my_dict)
+            for mscre in manuscripts_editions:
+                if not mscre:
+                    break
+                my_dict = dict()
+                my_dict['model'] = 'franciscanauthors_model.manuscript_edition'
+                my_dict['pk'] = pk_manuscripts_editions
+                list_manuscripts_editions.append(pk_manuscripts_editions)
+                pk_manuscripts_editions += 1
+                f = [('entry', mscre)]
+                my_dict['fields'] = dict(f)
+                final_data.append(my_dict)
 
-        editions = editions.splitlines()
         list_editions = []
-        for edition in editions:
-            if edition == 'null':
-                break
-            my_dict = dict()
-            my_dict['model'] = 'franciscanauthors_model.edition'
-            my_dict['pk'] = pk_editions
-            list_editions.append(pk_editions)
-            pk_editions += 1
-            f = [('entry', edition)]
-            my_dict['fields'] = dict(f)
-            final_data.append(my_dict)
+        if editions:
+            editions = editions.splitlines()
+            for edition in editions:
+                if not edition:
+                    break
+                my_dict = dict()
+                my_dict['model'] = 'franciscanauthors_model.edition'
+                my_dict['pk'] = pk_editions
+                list_editions.append(pk_editions)
+                pk_editions += 1
+                f = [('entry', edition)]
+                my_dict['fields'] = dict(f)
+                final_data.append(my_dict)
 
-        translations = translations.splitlines()
         list_translations = []
-        for translation in translations:
-            if translation == 'null':
-                break
-            my_dict = dict()
-            my_dict['model'] = 'franciscanauthors_model.translation'
-            my_dict['pk'] = pk_translations
-            list_translations.append(pk_translations)
-            pk_translations += 1
-            f = [('entry', translation)]
-            my_dict['fields'] = dict(f)
-            final_data.append(my_dict)
+        if translations:
+            translations = translations.splitlines()
+            for translation in translations:
+                if not translation:
+                    break
+                my_dict = dict()
+                my_dict['model'] = 'franciscanauthors_model.translation'
+                my_dict['pk'] = pk_translations
+                list_translations.append(pk_translations)
+                pk_translations += 1
+                f = [('entry', translation)]
+                my_dict['fields'] = dict(f)
+                final_data.append(my_dict)
 
-        editions_translations = editions_translations.splitlines()
         list_editions_translations = []
-        for et in editions_translations:
-            if et == 'null':
-                break
-            my_dict = dict()
-            my_dict['model'] = 'franciscanauthors_model.edition_translation'
-            my_dict['pk'] = pk_editions_translations
-            list_editions_translations.append(pk_editions_translations)
-            pk_editions_translations += 1
-            f = [('entry', et)]
-            my_dict['fields'] = dict(f)
-            final_data.append(my_dict)
+        if editions_translations:
+            editions_translations = editions_translations.splitlines()
+            for et in editions_translations:
+                if not et:
+                    break
+                my_dict = dict()
+                my_dict['model'] = 'franciscanauthors_model.edition_translation'
+                my_dict['pk'] = pk_editions_translations
+                list_editions_translations.append(pk_editions_translations)
+                pk_editions_translations += 1
+                f = [('entry', et)]
+                my_dict['fields'] = dict(f)
+                final_data.append(my_dict)
 
 
         l = [('name_bold', name_bold) , ('name_date', name_date), ('name_original', name_original), ('name_latin', name_latin), ('personalia', personalia), \
