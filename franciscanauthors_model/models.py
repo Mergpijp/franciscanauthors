@@ -1,5 +1,79 @@
 from django.db import models
 
+class Genre(models.Model):
+    genre_id = models.AutoField(primary_key=True)
+    genre_description = models.CharField(max_length=250, blank=True)
+
+    @property
+    def genre_groups(self):
+        return Genre_group.objects.filter(genre=self)
+
+class Genre_group(models.Model):
+    genre_group = models.CharField(max_length=250, blank=True)
+    genre_id = models.ForeignKey(Genre, to_field='genre_id', on_delete=models.CASCADE)
+
+class Date_precision(models.Model):
+    date_precision_id = models.AutoField(primary_key=True)
+    date_precision = models.CharField(max_length=250, blank=True)
+
+class Author(models.Model):
+    author_id = models.AutoField(primary_key=True)
+    author_name = models.CharField(max_length=250, blank=True)
+    biography = models.CharField(max_length=250, blank=True)
+    birth = models.CharField(max_length=250, blank=True)
+    death = models.CharField(max_length=250, blank=True)
+    birth_date_precision_id = models.ForeignKey(Date_precision, to_field='date_precision_id', on_delete=models.CASCADE, \
+                                                related_name = 'birth_dates')
+    death_date_precision_id = models.ForeignKey(Date_precision, to_field='date_precision_id', on_delete=models.CASCADE, \
+                                                related_name = 'death_dates')
+    checked = models.NullBooleanField()
+
+class Works(models.Model):
+    author_id = models.ForeignKey(Author, to_field='author_id', on_delete=models.CASCADE)
+    year = models.IntegerField()
+    title = models.CharField(max_length=250, blank=True)
+    publisher = models.CharField(max_length=250, blank=True)
+    location = models.CharField(max_length=250, blank=True)
+    detaiL_descriptions = models.CharField(max_length=250, blank=True)
+    date_precision_id = models.ForeignKey(Date_precision, to_field='date_precision_id', on_delete=models.CASCADE)
+    genre_id = models.ForeignKey(Genre, to_field='genre_id', on_delete=models.CASCADE)
+
+class Alias(models.Model):
+    author_ID = models.ForeignKey(Author, to_field='author_id', on_delete=models.CASCADE)
+    alias = models.CharField(max_length=250, blank=True)
+
+class Additional_info(models.Model):
+    author_ID = models.ForeignKey(Author, to_field='author_id', on_delete=models.CASCADE)
+    add_comments = models.CharField(max_length=250, blank=True)
+
+class Location_time(models.Model):
+    author_ID = models.ForeignKey(Author, to_field='author_id', on_delete=models.CASCADE)
+    geo_location_name = models.CharField(max_length=250, blank=True)
+    fr_province = models.CharField(max_length=250, blank=True)
+    date = models.CharField(max_length=250, blank=True)
+    date_precision_id = models.ForeignKey(Date_precision, to_field='date_precision_id', on_delete=models.CASCADE)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 class Edition(models.Model):
     entry = models.CharField(max_length=250, blank=True)
 
