@@ -1,1 +1,7 @@
 django==3.0.8
+django-bootstrap4
+django-select2
+django-redis
+django-pdb
+Markdown
+django_crispy_forms

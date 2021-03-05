@@ -1,0 +1,87 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Franciscan authors</title>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+        {{ form.media.css }}
+        <link rel="stylesheet" href="{% static 'css/base.css'%}">
+        <link rel="stylesheet" href="{% static 'css/jquery-ui.min.css'%}">
+
+        <script type="text/javascript" src="{% static 'jquery/js/jquery-3.4.1.min.js' %}">  </script>
+        <script type="text/javascript" src="{% static 'bootstrap/js/bootstrap-tab.js' %}">  </script>
+        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+
+        <link rel="stylesheet" href="{% static 'css/select2-bootstrap4.css'%}">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.5/js/select2.full.min.js"></script>
+        <script type="text/javascript" src="{% static 'js/base.js' %}">  </script>
+        <script src="{% static 'js/dropzone/dist/dropzone.js' %}"></script>
+        <link rel="stylesheet" href="{% static 'js/dropzone/dist/basic.css'%}">
+        <link rel="stylesheet" href="{% static 'js/dropzone/dist/dropzone.css'%}">
+        <script src="{% static 'js/jquery.bootstrap.modal.forms.min.js' %}"></script>
+        <script src="{% static 'jquery-ui/jquery-ui.min.js' %}"></script>
+
+        <link href="{% static 'font-awesome-4.7.0/css/font-awesome.min.css' %}" rel="stylesheet">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/js/standalone/selectize.min.js" integrity="sha256-+C0A5Ilqmu4QcSPxrlGpaZxJ04VjsRjKu+G82kl5UJk=" crossorigin="anonymous"></script>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/css/selectize.bootstrap3.min.css" integrity="sha256-ze/OEYGcFbPRmvCnrSeKbRTtjG4vGLHXgOqsyLFTRjg=" crossorigin="anonymous" />
+        {% block headjavascript %}{% endblock headjavascript %}
+   </head>
+
+
+    <body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        {% if user.is_authenticated %}
+        <div class="nav-link disabled">
+            Hi {{ user.username }}!
+        </div>
+        <a class="nav-link confirm-logout" href="{% url 'logout' %}">logout</a>
+        {% else %}
+        <div class="nav-link">
+            You are not logged in:
+        <a href="{% url 'login' %}">login</a>
+        </div>
+        {% endif %}
+    
+    <ul class="navbar-nav mr-auto">
+    <ul class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              Navigate
+        </a>
+    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <a class="dropdown-item" href="/genre/show/">Genres</a>
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item" href="/thrashbin/show/">Thrash bin authors</a>
+    </div>
+    </ul>
+      <li class="nav-item">
+        <a class="nav-link" href="/author/new/">New Author</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/author/show/">Show Author</a>
+      </li>
+    </ul>
+    <ul class="navbar-nav mr-auto">
+        <div class="'navbar-header">
+            <a class="navbar-brand" href="/">
+                <img src="{% static 'logo/radboud2.png'%}" alt="">
+            </a>
+       </div>
+    </ul>
+
+    <form class="form-inline my-2 my-lg-0" action="{% url 'author-show' %}" method="get">
+      <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" name="q" style="Text-align: start;unicode-bidi: plaintext;">
+      <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+    </form>
+    </nav>
+   <div class="container">
+      <div class="row">
+        <div class="col-sm">
+        {% block content %}{% endblock content %}
+        </div>
+      </div>
+    </div>
+     {{ form.media.js }}
+    {% block ending %} {% endblock ending %}
+    </body>
+</html>

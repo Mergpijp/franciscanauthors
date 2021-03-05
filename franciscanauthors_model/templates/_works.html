@@ -1,0 +1,140 @@
+<div id="linkeddocuments_works">
+<div class="col-12 mb-3">
+    <h5>Linked Works</h5>
+    {% include "_works_table.html" %}
+</div>
+</div>
+<div id="searchdocumentpanel_works" class="container">
+  <div class="row">
+   <div class="col"></div>
+   <div class="col">
+       <!-- Trigger the modal with a button -->
+    <button type="button" class="btn btn-primary btn-danger" id='works-btn' data-toggle="modal" data-target="#WorksModal"><span class="fa fa-plus mr-2"></span>Create linked Work</button>
+
+    <!-- Modal -->
+    <div id="WorksModal" class="modal fade" role="dialog">
+      <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title col-md-10">Create Work</h5>
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+          </div>
+          <div class="modal-body">
+            <div class="form-group">
+                <label for="id_year">Year</label>
+                <input type="number" name="year" maxlength="100" placeholder="year" class="form-control" id="id_year">
+                <div class="">
+
+                </div>
+            </div>
+              <div class="form-group">
+                <label for="id_title">Title</label>
+                <input type="text" name="title" maxlength="100" placeholder="title" class="form-control" id="id_title">
+                <div class="">
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="id_publisher">Publisher</label>
+                <input type="text" name="publisher" maxlength="400" placeholder="publisher" class="form-control" id="id_publisher">
+                <div class="">
+
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="id_location">Location</label>
+                <input type="text" name="location" maxlength="400" placeholder="location" class="form-control" id="id_location">
+                <div class="">
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="id_detail_descriptions">Detail descriptions</label>
+                <input type="text" name="detail descriptions" maxlength="400" placeholder="detail descriptions" class="form-control" id="id_detail_descriptions">
+                <div class="">
+                </div>
+              </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            <button type="button" id="work-create" class="submit-btn btn btn-primary" data-dismiss="modal">Create</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+    <br/>
+    <br/>Search Works :<br/>
+    <br/>
+    <input type="text" id="id_search_works">
+    </input>
+    </div>
+    <div class="col"></div>
+</div>
+  <br/>
+  <div class="col-12 mb-3">
+      <h5>Works candidates</h5>
+      {% include "_works_candidates_table.html" %}
+  </div>
+</div>
+
+<script type="text/javascript">
+$(function () {
+$("#works-btn").click(function(e) {
+    document.getElementById('id_year').value = 0;
+    document.getElementById('id_title').value = '';
+    document.getElementById('id_publisher').value = '';
+    document.getElementById('id_location').value = '';
+    document.getElementById('id_detail_descriptions').value = '';
+});
+$("#work-create").click(function(e) {
+    var fd = new FormData();
+    fd.append('csrfmiddlewaretoken', getCookie('csrftoken'));
+    fd.append("year", $('#id_year').val());
+    fd.append("title", $('#id_title').val());
+    fd.append("publisher", $('#id_publisher').val());
+    fd.append("location", $('#id_location').val());
+    fd.append("detail_descriptions", $('#id_detail_descriptions').val());
+    $.ajax({
+      url: "{% url 'work-process' author.pk %}",
+      data: fd,
+      processData: false,
+      contentType: false,
+      type: 'POST',
+        success:function(data) {
+          $("#works-div").html(data["table"]);
+        }
+    });
+});
+$(document).ready(function() {
+    $('#id_search_works').on('input', function () {
+        if ($("#id_search_works").val().length > 0) {
+                var data = {
+                csrfmiddlewaretoken: getCookie('csrftoken'),
+                input: $("#id_search_works").val(),
+            }
+            $.post("{% url 'search-work' author.pk %}", data, function(data, status){
+                if(status === 'success') {
+                    $("#works-candidates-div").html(data["table"]);
+                }
+            });
+        }
+    });
+});
+function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie != '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = jQuery.trim(cookies[i]);
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+});
+</script>

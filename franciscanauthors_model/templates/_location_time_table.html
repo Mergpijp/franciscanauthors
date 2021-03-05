@@ -1,0 +1,41 @@
+<div id="location_times-div">
+<table class="table">
+  <thead>
+  <tr>
+    <th class="text-center" scope="col">ID</th>
+    <th class="text-center" scope="col">Geo location name</th>
+    <th class="text-center" scope="col">Fr province</th>
+    <th class="text-center" scope="col">Date</th>
+    <th class="text-center" scope="col">Unlink</th>
+  </tr>
+  </thead>
+  <tbody>
+  {% for lt in author.location_time_set.all %}
+    <tr>
+      <th class="text-center" scope="row">{{ lt.pk }}</th>
+      <td class="text-center">{{ lt.geo_location_name }}</td>
+      <td class="text-center">{{ lt.fr_province }}</td>
+      <td class="text-center">{{ lt.date }}</td>
+      <td class="text-center">
+        <!-- Unlink author buttons -->
+        <button type="button" class="location_time-unlink btn btn-sm btn-danger" data-form-url="{% url 'unlink-location_time' author.pk lt.pk %}">
+          <span class="fa fa-trash"></span> Unlink
+        </button>
+      </td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+<script>
+ $( ".location_time-unlink" ).click(function() {
+     var data = {
+        csrfmiddlewaretoken: getCookie('csrftoken'),
+    }
+    $.post($(this).attr('data-form-url'), data, function(data, status){
+        if(status === 'success') {
+            $("#location_times-div").html(data["table"]);
+        }
+    });
+});
+</script>
+</div>

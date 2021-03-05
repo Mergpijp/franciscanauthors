@@ -1,0 +1,147 @@
+<div id="location_times-candidates-div">
+<table class="table">
+  <thead>
+  <tr>
+    <th class="text-center" scope="col">ID</th>
+    <th class="text-center" scope="col">Geo location name</th>
+    <th class="text-center" scope="col">Fr province</th>
+    <th class="text-center" scope="col">Date</th>
+    <th class="text-center" scope="col">Update/ Link</th>
+  </tr>
+  </thead>
+  <tbody>
+  {% for lt in location_times.all %}
+    <tr>
+      <th class="text-center" scope="row">{{ lt.pk }}</th>
+      <td class="text-center">{{ lt.geo_location_name }}</td>
+      <td class="text-center">{{ lt.fr_province }}</td>
+      <td class="text-center">{{ lt.date}}</td>
+      <td class="text-center">
+        <!-- Update location_time buttons -->
+        <button type="button" id='init-btn{{ lt.pk }}' class="btn btn-primary btn-danger" data-toggle="modal" data-target="#UpdateLocationTime{{ lt.pk }}">
+          <span class="fa fa-pencil"></span>
+        </button>
+            <!-- Modal -->
+    <div id="UpdateLocationTime{{ lt.pk }}" class="modal fade" tabindex="-1" role="dialog">
+      <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title col-md-10">Update Location time</h5>
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+          </div>
+          <div class="modal-body">
+            <div class="form-group">
+                <label for="id_geo_location_name{{ lt.pk }}">Name</label>
+                <input type="text" name="name" maxlength="250" value="{{ lt.geo_location_name }}" class="form-control geo_location_name" id="id_geo_location_name{{ lt.pk }}">
+                <div class="">
+
+                </div>
+            </div>
+              <div class="form-group">
+                <label for="id_fr_province{{ lt.pk }}">Fr province</label>
+                <input type="text" name="fr_province" maxlength="250" value="{{ lt.fr_province }}" class="form-control fr_province" id="id_fr_province{{ lt.pk }}">
+                <div class="">
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="id_date{{ lt.pk }}">Date</label>
+                <input type="text" name="date" maxlength="100" value="{{ lt.date }}" class="form-control date" id="id_date{{ lt.pk }}">
+                <div class="">
+
+                </div>
+              </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" id="close-btn{{ lt.pk }}" class="btn btn-default" data-dismiss="modal">Close</button>
+            <button type="button" id="update-btn{{ lt.pk }}" class="submit-btn btn btn-primary" data-form-url="{% url 'location_time-process' author.pk lt.pk %}" data-dismiss="modal">Update</button>
+          </div>
+        </div>
+      </div>
+    </div>
+        <!-- Link location time buttons -->
+        <button type="button" id="location_time-link{{ lt.pk }}" class="location_time-link btn btn-sm btn-danger" data-form-url="{% url 'link-location_time' author.pk lt.pk %}">
+          <span class="fa fa-plus mr-2"></span>Link
+        </button>
+      </td>
+    </tr>
+
+<script>
+$(function () {
+$( "#id_date{{ lt.pk }}" ).datepicker({ changeYear: true,
+                            changeMonth: true,
+                            yearRange: '1160:1850',
+                            defaultDate: '01/01/1160'});
+$("#update-btn{{ lt.pk }}").click(function(e) {
+    var data = {
+        csrfmiddlewaretoken: getCookie('csrftoken'),
+        geo_location_name: $('#id_geo_location_name{{ lt.pk }}').val(),
+        fr_province: $('#id_fr_province{{ lt.pk }}').val(),
+        date: $('#id_date{{ lt.pk }}').val()
+    }
+    $.post($(this).attr('data-form-url'), data, function(data,status){
+        if(status === 'success') {
+            $('#id_search_location_time').val('');
+            $("#location_times-div").html(data["table"]);
+        }
+    });
+})
+function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie != '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = jQuery.trim(cookies[i]);
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+});
+</script>
+{% endfor %}
+
+  </tbody>
+</table>
+
+<script>
+$(function () {
+$( ".location_time-link" ).click(function() {
+    var data_cookie = {
+        csrfmiddlewaretoken: getCookie('csrftoken'),
+    }
+    $.post($(this).attr('data-form-url'), data_cookie, function(data, status){
+        if(status === 'success') {
+            $("#location_times-div").html(data["table"]);
+            $('#id_search_location_time').val('');
+            $.post("{% url 'search-location_time' author.pk %}", data_cookie, function(data2, status2){
+                if(status2 === 'success') {
+                    $("#location_times-candidates-div").html(data2["table"]);
+                }
+
+            })
+        }
+    });
+    })
+function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie != '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = jQuery.trim(cookies[i]);
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+});
+</script>
+</div>

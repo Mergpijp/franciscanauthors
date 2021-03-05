@@ -1,0 +1,128 @@
+<div id="linkeddocuments">
+<div class="col-12 mb-3">
+    <h5>Linked Location times</h5>
+    {% include "_location_time_table.html" %}
+</div>
+</div>
+<div id="searchdocumentpanel" class="container">
+  <div class="row">
+   <div class="col"></div>
+   <div class="col">
+       <!-- Trigger the modal with a button -->
+    <button type="button" class="btn btn-primary btn-danger" id='location_time-btn' data-toggle="modal" data-target="#LocationTimeModal"><span class="fa fa-plus mr-2"></span>Create linked location time</button>
+
+    <!-- Modal -->
+    <div id="LocationTimeModal" class="modal fade" role="dialog">
+      <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title col-md-10">Create Location time</h5>
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+          </div>
+          <div class="modal-body">
+            <div class="form-group">
+                <label for="id_geo_location_name">Geo location name</label>
+                <input type="text" name="name" maxlength="250" placeholder="Geo location name" class="form-control" id="id_geo_location_name">
+                <div class="">
+
+                </div>
+            </div>
+              <div class="form-group">
+                <label for="id_fr_province">Fr province</label>
+                <input type="text" name="name_original_language" maxlength="250" placeholder="Fr province" class="form-control" id="id_fr_province">
+                <div class="">
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="id_date">Date</label>
+                <input type="text" name="extra_info" maxlength="100" placeholder="Date" class="form-control" id="id_date">
+                <div class="">
+
+                </div>
+              </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            <button type="button" id="location_time-create" class="submit-btn btn btn-primary" data-dismiss="modal">Create</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+    <br/>
+    <br/>Search Location time :<br/>
+    <br/>
+    <input type="text" id="id_search_location_times">
+    </input>
+    </div>
+    <div class="col"></div>
+</div>
+  <br/>
+  <div class="col-12 mb-3">
+      <h5>Location time candidates</h5>
+      {% include "_location_time_candidates_table.html" %}
+  </div>
+</div>
+
+<script type="text/javascript">
+$(function () {
+$( "#id_date" ).datepicker({ changeYear: true,
+                            changeMonth: true,
+                            yearRange: '1160:1850',
+                            defaultDate: '01/01/1160'});
+$("#location_time-btn").click(function(e) {
+    document.getElementById('id_geo_location_name').value = '';
+    document.getElementById('id_fr_province').value = '';
+    document.getElementById('id_date').value = '';
+});
+$("#location_time-create").click(function(e) {
+    var fd = new FormData();
+    fd.append('csrfmiddlewaretoken', getCookie('csrftoken'));
+    fd.append("geo_location_name", $('#id_geo_location_name').val());
+    fd.append("fr_province", $('#id_fr_province').val());
+    fd.append("date", $('#id_date').val());
+    $.ajax({
+      url: "{% url 'location_time-process' author.pk %}",
+      data: fd,
+      processData: false,
+      contentType: false,
+      type: 'POST',
+        success:function(data) {
+          $("#location_times-div").html(data["table"]);
+        }
+    });
+});
+$(document).ready(function() {
+    $('#id_search_location_times').on('input', function () {
+        if ($("#id_search_location_times").val().length > 0) {
+                var data = {
+                csrfmiddlewaretoken: getCookie('csrftoken'),
+                input: $("#id_search_location_times").val(),
+            }
+            $.post("{% url 'search-location_time' author.pk %}", data, function(data, status){
+                if(status === 'success') {
+                    $("#location_times-candidates-div").html(data["table"]);
+                }
+            });
+        }
+    });
+});
+function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie != '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = jQuery.trim(cookies[i]);
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+});
+</script>

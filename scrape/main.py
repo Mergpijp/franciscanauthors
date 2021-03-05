@@ -13,6 +13,10 @@ pk_manuscripts_editions = 1
 pk_editions = 1
 pk_translations = 1
 pk_editions_translations = 1
+
+pk_author = 1
+pk_date_precision = 1
+
 final_data = list()
 
 for let in letters:
@@ -50,6 +54,46 @@ for let in letters:
             except AttributeError:
                 stop = True
         return variable, stop, tag
+
+    def has_four_digits(str):
+        succ = 0
+        for index, char in enumerate(str):
+            if char.isdigit():
+                succ += 1
+            else:
+                succ = 0
+            if succ == 4:
+                if index+1 < len(str):
+                    return not(str[index+1].isdigit())
+                else:
+                    return True
+        return False
+
+    def has_century(str):
+        succ = 0
+        for index, char in enumerate(str):
+            if char.isdigit():
+                succ += 1
+            else:
+                succ = 0
+            if succ == 2:
+                if index+2 < len(str):
+                    return str[index+1] == 't' and str[index+2] == 'h'
+                else:
+                    return False
+        return False
+
+    def extract_year(str):
+        regex = re.compile(r'\d{4}-\d{4}')
+        matchobj = regex.search(str)
+        if matchobj:
+            return matchobj.group(0)
+        else:
+            regex = re.compile(r'\d{4}')
+            m = regex.search(str)
+            if m:
+                return m.group(0)
+        return None
 
 
     def find_content(variable, stop, tag):
@@ -218,6 +262,7 @@ for let in letters:
                 name_date = x
         personalia = name
 
+        '''
         list_manuscripts = []
         if manuscripts:
             manuscripts = manuscripts.splitlines()
@@ -303,14 +348,48 @@ for let in letters:
              ('editions_music', editions_music), ('surviving_works', surviving_works),('edities_studies', edities_studies), \
              ('manuscripts_editions_literature', manuscripts_editions_literature), ('salimbenes_literary_legacy', salimbenes_literary_legacy), \
              ('editions_translations', list_editions_translations), ('studies', studies), ('translations', list_translations), ('primo_vita_bona', primo_vita_bona), ('letter', let)]
+        '''
+        list_date = []
+        if name_date:
+            my_dict = dict()
+            my_dict['model'] = 'franciscanauthors_model.Date_precision'
+            my_dict['pk'] = pk_date_precision
+            list_date.append(pk_date_precision)
+            date_precision = ''
+            if name_date:
+                date_precision = name_date
+            elif has_four_digits(name_original):
+                date_precision = name_original
+            my_dict['fields'] = {'date_precision_id': pk_date_precision ,
+                                 'date_precision': date_precision}
+            pk_date_precision += 1
+            final_data.append(my_dict)
 
+
+        my_dict = dict()
+        my_dict['model'] = 'franciscanauthors_model.author'
+        my_dict['fields'] = {'author_name': name_latin + " " + name_original,
+                  'biography': personalia,
+                  'birth': '', 'death': '',
+                  'birth_date_precision_id': list_date,
+                  'death_date_precision_id': list_date,
+                  'checked': False,
+                  }
+        my_dict['pk'] = pk_author
+        pk_author += 1
+
+        my_dict = dict()
+        my_dict['model'] = 'franciscanauthors_model.works'
+        my_dict['fields'] = {'year': }
+
+        '''
         my_dict = dict()
         my_dict['model'] = 'franciscanauthors_model.record'
         my_dict['pk'] = pk
         pk += 1
         my_dict['fields'] = dict(l)
         final_data.append(my_dict)
-
+        '''
 
 with open('../franciscanauthors_data/fixtures/fixture_good.json', 'w') as f:
     json.dump(final_data, f, indent=2)

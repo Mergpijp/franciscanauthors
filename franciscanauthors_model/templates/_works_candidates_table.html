@@ -1,0 +1,163 @@
+<div id="works-candidates-div">
+<table class="table">
+  <thead>
+  <tr>
+    <th class="text-center" scope="col">ID</th>
+    <th class="text-center" scope="col">Year</th>
+    <th class="text-center" scope="col">Title</th>
+    <th class="text-center" scope="col">Publisher</th>
+    <th class="text-center" scope="col">Location</th>
+    <th class="text-center" scope="col">Detail descriptions</th>
+    <th class="text-center" scope="col">Update/ Link</th>
+  </tr>
+  </thead>
+  <tbody>
+  {% for work in works.all %}
+    <tr>
+      <th class="text-center" scope="row">{{ work.pk }}</th>
+      <td class="text-center">{{ work.year }}</td>
+      <td class="text-center">{{ work.title }}</td>
+      <td class="text-center">{{ work.publisher}}</td>
+      <td class="text-center">{{ work.location}}</td>
+      <td class="text-center">{{ work.detail_descriptions}}</td>
+      <td class="text-center">
+        <!-- Update author buttons -->
+        <button type="button" id='init-btn{{ work.pk }}' class="btn btn-primary btn-danger" data-toggle="modal" data-target="#UpdateWork{{ work.pk }}">
+          <span class="fa fa-pencil"></span>
+        </button>
+            <!-- Modal -->
+    <div id="UpdateWork{{ work.pk }}" class="modal fade" tabindex="-1" role="dialog">
+      <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title col-md-10">Update Work</h5>
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+          </div>
+          <div class="modal-body">
+            <div class="form-group">
+                <label for="id_year{{ work.pk }}">Year</label>
+                <input type="text" name="name" maxlength="100" value="{{ work.year }}" class="form-control year" id="id_year{{ work.pk }}">
+                <div class="">
+
+                </div>
+            </div>
+              <div class="form-group">
+                <label for="id_title{{ work.pk }}">Title</label>
+                <input type="text" name="title" maxlength="250" value="{{ work.title }}" class="form-control title" id="id_title{{ work.pk }}">
+                <div class="">
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="id_publisher{{ lt.pk }}">Publisher</label>
+                <input type="text" name="publisher" maxlength="250" value="{{ work.publisher }}" class="form-control publisher" id="id_publisher{{ work.pk }}">
+                <div class="">
+
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="id_location{{ lt.pk }}">Location</label>
+                <input type="text" name="location" maxlength="250" value="{{ work.location }}" class="form-control location" id="id_location{{ work.pk }}">
+                <div class="">
+
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="id_detail_descriptions{{ lt.pk }}">Detail descriptions</label>
+                <input type="text" name="detail descriptions" maxlength="250" value="{{ work.detail_descriptions }}" class="form-control detail_descriptions" id="detail_descriptions{{ work.pk }}">
+                <div class="">
+
+                </div>
+              </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" id="close-btn{{ work.pk }}" class="btn btn-default" data-dismiss="modal">Close</button>
+            <button type="button" id="update-btn{{ work.pk }}" class="submit-btn btn btn-primary" data-form-url="{% url 'work-process' author.pk work.pk %}" data-dismiss="modal">Update</button>
+          </div>
+        </div>
+      </div>
+    </div>
+        <!-- Link location time buttons -->
+        <button type="button" id="work-link{{ work.pk }}" class="work-link btn btn-sm btn-danger" data-form-url="{% url 'link-work' author.pk work.pk %}">
+          <span class="fa fa-plus mr-2"></span>Link
+        </button>
+      </td>
+    </tr>
+
+<script>
+$(function () {
+$("#update-btn{{ work.pk }}").click(function(e) {
+    var data = {
+        csrfmiddlewaretoken: getCookie('csrftoken'),
+        year: $('#id_year{{ work.pk }}').val(),
+        title: $('#id_title{{ work.pk }}').val(),
+        publisher: $('#id_publisher{{ work.pk }}').val(),
+        location: $('#id_location{{ work.pk }}').val(),
+        detail_descriptions: $('#id_detail_descriptions{{ work.pk }}').val(),
+    }
+    $.post($(this).attr('data-form-url'), data, function(data,status){
+        if(status === 'success') {
+            $('#id_search_works').val('');
+            $("#works-div").html(data["table"]);
+        }
+    });
+})
+function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie != '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = jQuery.trim(cookies[i]);
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+});
+</script>
+{% endfor %}
+
+  </tbody>
+</table>
+
+<script>
+$(function () {
+$( ".work-link" ).click(function() {
+    var data_cookie = {
+        csrfmiddlewaretoken: getCookie('csrftoken'),
+    }
+    $.post($(this).attr('data-form-url'), data_cookie, function(data, status){
+        if(status === 'success') {
+            $("#works-div").html(data["table"]);
+            $('#id_search_works').val('');
+            $.post("{% url 'search-work' author.pk %}", data_cookie, function(data2, status2){
+                if(status2 === 'success') {
+                    $("#works-candidates-div").html(data2["table"]);
+                }
+
+            })
+        }
+    });
+    })
+function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie != '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = jQuery.trim(cookies[i]);
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+});
+</script>
+</div>
