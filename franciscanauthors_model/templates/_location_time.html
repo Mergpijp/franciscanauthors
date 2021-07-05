@@ -42,6 +42,20 @@
 
                 </div>
               </div>
+              <div class="form-group" >
+                   <label for="id_date_precision_id" class="">
+                   Date precision
+                   </label>
+                   <div class="">
+                      <div class="input-group">
+                         <select name="date_precision" id="id_date_precision_id">
+                         </select>
+                         <br/>
+                         <br/>
+                          <a data-toggle="modal" href="#DatePrecisionIdModal_2" class="btn btn-primary btn-danger">Add Date precision id</a>
+                      </div>
+                   </div>
+              </div>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -50,6 +64,31 @@
         </div>
 
       </div>
+    </div>
+    <!-- Modal -->
+    <div id="DatePrecisionIdModal_2" class="modal fade" role="dialog" data-backdrop="static">
+      <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title col-md-10">Create Date precision id</h5>
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+          </div>
+          <div class="modal-body">
+            <div class="form-group">
+                <label for="id_date_precision_2">Date precision</label>
+                <input type="text" name="date precision" maxlength="250" placeholder="date precision" class="form-control" id="id_date_precision_2">
+                <div class="">
+                </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            <button type="submit" id="date_precision-create_2" class="submit-btn btn btn-primary" data-dismiss="modal">Create</button>
+          </div>
+      </div>
+    </div>
     </div>
     <br/>
     <br/>Search Location time :<br/>
@@ -68,6 +107,19 @@
 
 <script type="text/javascript">
 $(function () {
+$("#date_precision-create_2").click(function(e) {
+    var fd = new FormData();
+    fd.append('csrfmiddlewaretoken', getCookie('csrftoken'));
+    fd.append("date_precision", $('#id_date_precision_2').val());
+
+$.ajax({
+  url: "{% url 'date_precision-process' %}",
+  data: fd,
+  processData: false,
+  contentType: false,
+  type: 'POST',
+});
+});
 $( "#id_date" ).datepicker({ changeYear: true,
                             changeMonth: true,
                             yearRange: '1160:1850',
@@ -76,6 +128,7 @@ $("#location_time-btn").click(function(e) {
     document.getElementById('id_geo_location_name').value = '';
     document.getElementById('id_fr_province').value = '';
     document.getElementById('id_date').value = '';
+    $("#id_date_precision_id").select2("val", "0");
 });
 $("#location_time-create").click(function(e) {
     var fd = new FormData();
@@ -83,6 +136,12 @@ $("#location_time-create").click(function(e) {
     fd.append("geo_location_name", $('#id_geo_location_name').val());
     fd.append("fr_province", $('#id_fr_province').val());
     fd.append("date", $('#id_date').val());
+    if ($('#id_date_precision_id').val() == null) {
+        fd.append('date_precision_id', "");
+    }
+    else {
+        fd.append('date_precision_id', $('#id_date_precision_id').val());
+    }
     $.ajax({
       url: "{% url 'location_time-process' author.pk %}",
       data: fd,
@@ -106,6 +165,22 @@ $(document).ready(function() {
                     $("#location_times-candidates-div").html(data["table"]);
                 }
             });
+        }
+    });
+    $("#id_date_precision_id").select2({
+        minimumInputLength: 0,
+        allowClear: true,
+        placeholder: "--------",
+        ajax: {
+            url: "/select2_date_precision_id",
+            dataType: "json",
+            type: "GET",
+
+        },
+        processResults: function (data) {
+            return {
+                results: data
+            };
         }
     });
 });

@@ -1,10 +1,16 @@
+
+
 <script>
-$( "#id_birth" ).datepicker({ changeYear: true,
-                            changeMonth: true,
-                            yearRange: '1160:1850',
-                            defaultDate: '01/01/1160'});
-$( "#id_death" ).datepicker({ changeYear: true,
-                                changeMonth: true,
-                                yearRange: '1160:1850',
-                                defaultDate: '01/01/1850'});
+$( "#id_birth" ).yearpicker({
+  year: 1160,
+  startyear: 1160,
+  endyear: 1850,
+
+ });
+$( "#id_death" ).yearpicker({
+    year: 1850,
+    startyear: 1160,
+    endyear: 1850,
+});
+
 </script>

@@ -1,0 +1,36 @@
+<div id="aliases-div">
+<table class="table">
+  <thead>
+  <tr>
+    <th class="text-center" scope="col">ID</th>
+    <th class="text-center" scope="col">Alias</th>
+  </tr>
+  </thead>
+  <tbody>
+  {% for alias in author.alias_set.all %}
+    <tr>
+      <th class="text-center" scope="row">{{ alias.pk }}</th>
+      <td class="text-center">{{ alias.alias}}</td>
+      <td class="text-center">
+        <!-- Unlink work buttons -->
+        <button type="button" class="alias-unlink btn btn-sm btn-danger" data-form-url="{% url 'unlink-alias' author.pk alias.pk %}">
+          <span class="fa fa-trash"></span> Unlink
+        </button>
+      </td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+<script>
+ $( ".alias-unlink" ).click(function() {
+     var data = {
+        csrfmiddlewaretoken: getCookie('csrftoken'),
+    }
+    $.post($(this).attr('data-form-url'), data, function(data, status){
+        if(status === 'success') {
+            $("#aliases-div").html(data["table"]);
+        }
+    });
+});
+</script>
+</div>

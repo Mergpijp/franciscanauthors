@@ -54,9 +54,9 @@
         <td>{{ author.get_truncated_alias }}</td>
         <td>{{ author.get_truncated_add_comments }}</td>
         <td>
-            <a href="/author/{{ author.id }}/detail_view">View</a>
-            <a href="/author/{{ author.id }}/edit?next={{ request.get_full_path }}"><span class="glyphicon glyphicon-pencil" >Edit</span></a>
-            <a class="confirm-delete-author" href="/author/{{ author.id }}/delete">Delete</a>
+            <a href="/author/{{ author.pk }}/detail_view">View</a>
+            <a href="/author/{{ author.pk }}/edit?next={{ request.get_full_path }}"><span class="glyphicon glyphicon-pencil" >Edit</span></a>
+            <a class="confirm-delete" href="/author/{{ author.pk }}/delete">Delete</a>
         </td>
     </tr>
 {% endfor %}

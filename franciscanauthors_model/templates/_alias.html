@@ -1,0 +1,107 @@
+<div id="linkeddocuments_aliases">
+<div class="col-12 mb-3">
+    <h5>Linked Aliases</h5>
+    {% include "_aliases_table.html" %}
+</div>
+</div>
+<div id="searchdocumentpanel_aliases" class="container">
+  <div class="row">
+   <div class="col"></div>
+   <div class="col">
+       <!-- Trigger the modal with a button -->
+    <button type="button" class="btn btn-primary btn-danger" id='aliases-btn' data-toggle="modal" data-target="#AliasesModal"><span class="fa fa-plus mr-2"></span>Create linked Alias</button>
+
+    <!-- Modal -->
+    <div id="AliasesModal" class="modal fade" role="dialog">
+      <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title col-md-10">Create Alias</h5>
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+          </div>
+          <div class="modal-body">
+            <div class="form-group">
+                <label for="id_alias">Alias</label>
+                <input type="text" name="alias" maxlength="250" placeholder="alias" class="form-control" id="id_alias">
+                <div class="">
+
+                </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            <button type="button" id="alias-create" class="submit-btn btn btn-primary" data-dismiss="modal">Create</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+    <br/>
+    <br/>Search Aliases :<br/>
+    <br/>
+    <input type="text" id="id_search_aliases">
+    </input>
+    </div>
+    <div class="col"></div>
+</div>
+  <br/>
+  <div class="col-12 mb-3">
+      <h5>Aliases candidates</h5>
+      {% include "_aliases_candidates_table.html" %}
+  </div>
+</div>
+
+<script type="text/javascript">
+$(function () {
+$("#aliases-btn").click(function(e) {
+    document.getElementById('id_alias').value = '';
+});
+$("#alias-create").click(function(e) {
+    var fd = new FormData();
+    fd.append('csrfmiddlewaretoken', getCookie('csrftoken'));
+    fd.append("alias", $('#id_alias').val());
+    $.ajax({
+      url: "{% url 'alias-process' author.pk %}",
+      data: fd,
+      processData: false,
+      contentType: false,
+      type: 'POST',
+        success:function(data) {
+          $("#alias-div").html(data["table"]);
+        }
+    });
+});
+$(document).ready(function() {
+    $('#id_search_aliases').on('input', function () {
+        if ($("#id_search_aliases").val().length > 0) {
+                var data = {
+                csrfmiddlewaretoken: getCookie('csrftoken'),
+                input: $("#id_search_aliases").val(),
+            }
+            $.post("{% url 'search-alias' author.pk %}", data, function(data, status){
+                if(status === 'success') {
+                    $("#aliases-candidates-div").html(data["table"]);
+                }
+            });
+        }
+    });
+});
+function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie != '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = jQuery.trim(cookies[i]);
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+});
+</script>

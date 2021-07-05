@@ -1,0 +1,36 @@
+<div id="genre_groups-div">
+<table class="table">
+  <thead>
+  <tr>
+    <th class="text-center" scope="col">ID</th>
+    <th class="text-center" scope="col">Genre group</th>
+  </tr>
+  </thead>
+  <tbody>
+  {% for genre_group in genre.genre_group_set.all %}
+    <tr>
+      <th class="text-center" scope="row">{{ genre_group.pk }}</th>
+      <td class="text-center">{{ genre_group.genre_group}}</td>
+      <td class="text-center">
+        <!-- Unlink work buttons -->
+        <button type="button" class="genre_group-unlink btn btn-sm btn-danger" data-form-url="{% url 'unlink-genre_group' genre.pk genre_group.pk %}">
+          <span class="fa fa-trash"></span> Unlink
+        </button>
+      </td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+<script>
+ $( ".genre_group-unlink" ).click(function() {
+     var data = {
+        csrfmiddlewaretoken: getCookie('csrftoken'),
+    }
+    $.post($(this).attr('data-form-url'), data, function(data, status){
+        if(status === 'success') {
+            $("#genre_groups-div").html(data["table"]);
+        }
+    });
+});
+</script>
+</div>

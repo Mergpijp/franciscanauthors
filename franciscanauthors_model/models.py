@@ -1,3 +1,5 @@
+import pdb
+
 from django.db import models
 
 MAX_CHARS = 120
@@ -5,18 +7,25 @@ MAX_CHARS = 120
 class Genre(models.Model):
     genre_id = models.AutoField(primary_key=True)
     genre_description = models.CharField(max_length=250, blank=True)
+    is_stub = models.BooleanField(default=False)
 
     @property
     def genre_groups(self):
         return Genre_group.objects.filter(genre=self)
 
+
 class Genre_group(models.Model):
     genre_group = models.CharField(max_length=250, blank=True)
-    genre_id = models.ForeignKey(Genre, to_field='genre_id', on_delete=models.CASCADE, blank=True, null=True)
+    genre = models.ForeignKey(Genre, to_field='genre_id', related_name='genre_group_list', on_delete=models.CASCADE, blank=True, null=True)
+
 
 class Date_precision(models.Model):
     date_precision_id = models.AutoField(primary_key=True)
     date_precision = models.CharField(max_length=250, blank=True)
+
+    def __str__(self):
+        return self.date_precision
+
 
 class Author(models.Model):
     author_id = models.AutoField(primary_key=True)
@@ -24,13 +33,16 @@ class Author(models.Model):
     biography = models.TextField(max_length=2000, blank=True)
     birth = models.CharField(max_length=250, blank=True)
     death = models.CharField(max_length=250, blank=True)
-    birth_date_precision_id = models.ForeignKey(Date_precision, to_field='date_precision_id', on_delete=models.CASCADE, \
-                                                related_name = 'birth_dates', blank=True, null=True)
-    death_date_precision_id = models.ForeignKey(Date_precision, to_field='date_precision_id', on_delete=models.CASCADE, \
-                                                related_name = 'death_dates', blank=True, null=True)
+    birth_date_precision = models.ForeignKey(Date_precision, to_field='date_precision_id', on_delete=models.CASCADE, \
+                                                related_name = 'authors_birth_date', blank=True, null=True)
+    death_date_precision = models.ForeignKey(Date_precision, to_field='date_precision_id', on_delete=models.CASCADE, \
+                                                related_name = 'authors_death_date', blank=True, null=True)
     checked = models.NullBooleanField()
     is_deleted = models.BooleanField(default=False)
     is_stub = models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.author_name
 
     @property
     def get_truncated_author_name(self):
@@ -62,7 +74,7 @@ class Author(models.Model):
 
     @property
     def get_truncated_birth_date_precision_id(self):
-        birth_dates = self.birth_date_precision_id
+        birth_dates = self.birth_dates
         x = ', '.join([date.date_precision for date in birth_dates.all()])
         if len(x) > MAX_CHARS:
             x = x[:MAX_CHARS] + '...'
@@ -70,7 +82,7 @@ class Author(models.Model):
 
     @property
     def get_truncated_death_date_precision_id(self):
-        death_dates = self.death_date_precision_id
+        death_dates = self.death_dates
         x = ', '.join([date.date_precision for date in death_dates.all()])
         if len(x) > MAX_CHARS:
             x = x[:MAX_CHARS] + '...'
@@ -78,7 +90,7 @@ class Author(models.Model):
 
     @property
     def get_truncated_geo_location_name(self):
-        locations_times = self.location_time_set.all()
+        locations_times = self.location_time_list.all()
         x = ', '.join([lt.geo_location_name for lt in locations_times.all()])
         if len(x) > MAX_CHARS:
             x = x[:MAX_CHARS] + '...'
@@ -86,7 +98,7 @@ class Author(models.Model):
 
     @property
     def get_truncated_fr_province(self):
-        locations_times = self.location_time_set.all()
+        locations_times = self.location_time_list.all()
         x = ', '.join([lt.fr_province for lt in locations_times.all()])
         if len(x) > MAX_CHARS:
             x = x[:MAX_CHARS] + '...'
@@ -94,7 +106,7 @@ class Author(models.Model):
 
     @property
     def get_truncated_date(self):
-        locations_times = self.location_time_set.all()
+        locations_times = self.location_time_list.all()
         x = ', '.join([lt.date for lt in locations_times.all()])
         if len(x) > MAX_CHARS:
             x = x[:MAX_CHARS] + '...'
@@ -102,15 +114,15 @@ class Author(models.Model):
 
     @property
     def get_truncated_year(self):
-        works = self.works_set.all()
-        x = ', '.join([work.year for work in works.all()])
+        works = self.works_author_list
+        x = ', '.join([work.year for work in works.all() if work.year])
         if len(x) > MAX_CHARS:
             x = x[:MAX_CHARS] + '...'
         return x
 
     @property
     def get_truncated_title(self):
-        works = self.works_set.all()
+        works = self.works_author_list
         x = ', '.join([work.title for work in works.all()])
         if len(x) > MAX_CHARS:
             x = x[:MAX_CHARS] + '...'
@@ -118,7 +130,7 @@ class Author(models.Model):
 
     @property
     def get_truncated_publisher(self):
-        works = self.works_set.all()
+        works = self.works_author_list
         x = ', '.join([work.publisher for work in works.all()])
         if len(x) > MAX_CHARS:
             x = x[:MAX_CHARS] + '...'
@@ -126,7 +138,7 @@ class Author(models.Model):
 
     @property
     def get_truncated_location(self):
-        works = self.works_set.all()
+        works = self.works_author_list
         x = ', '.join([work.location for work in works.all()])
         if len(x) > MAX_CHARS:
             x = x[:MAX_CHARS] + '...'
@@ -134,7 +146,7 @@ class Author(models.Model):
 
     @property
     def get_truncated_detail_descriptions(self):
-        works = self.works_set.all()
+        works = self.works_author_list
         x = ', '.join([work.detail_descriptions for work in works.all()])
         if len(x) > MAX_CHARS:
             x = x[:MAX_CHARS] + '...'
@@ -142,7 +154,7 @@ class Author(models.Model):
 
     @property
     def get_truncated_detail_alias(self):
-        alias = self.alias_set.all()
+        alias = self.alias_list
         x = ', '.join([a.alias for a in alias.all()])
         if len(x) > MAX_CHARS:
             x = x[:MAX_CHARS] + '...'
@@ -150,38 +162,55 @@ class Author(models.Model):
 
     @property
     def get_truncated_detail_additional_info(self):
-        ai = self.additional_info_set.all()
+        ai = self.additional_info_list
         x = ', '.join([a.add_comments for a in ai.all()])
         if len(x) > MAX_CHARS:
             x = x[:MAX_CHARS] + '...'
         return x
 
 class Works(models.Model):
-    author_id = models.ForeignKey(Author, to_field='author_id', on_delete=models.CASCADE, blank=True, null=True)
+    author = models.ForeignKey(Author, to_field='author_id', related_name='works_author_list', on_delete=models.CASCADE, blank=True, null=True)
     year = models.IntegerField(null=True, blank=True)
     title = models.CharField(max_length=250, blank=True)
     publisher = models.CharField(max_length=250, blank=True)
     location = models.CharField(max_length=250, blank=True)
     detail_descriptions = models.CharField(max_length=250, blank=True)
-    date_precision_id = models.ForeignKey(Date_precision, to_field='date_precision_id', on_delete=models.CASCADE, blank=True, null=True)
-    genre_id = models.ForeignKey(Genre, to_field='genre_id', on_delete=models.CASCADE, blank=True, null=True)
+    date_precision = models.ForeignKey(Date_precision, to_field='date_precision_id', related_name='works_date_list', on_delete=models.CASCADE, blank=True, null=True)
+    genre = models.ForeignKey(Genre, to_field='genre_id', related_name='works_genre_list',on_delete=models.CASCADE, blank=True, null=True)
+    text = models.TextField(max_length=200000, blank=True, null=True)
+
+    def __str__(self):
+        if self.text:
+            return  'title: ' + self.title + ' text: ' + self.text
+        else:
+            return 'title: ' + self.title
 
 class Alias(models.Model):
-    author_ID = models.ForeignKey(Author, to_field='author_id', on_delete=models.CASCADE, blank=True, null=True)
+    author = models.ForeignKey(Author, to_field='author_id', related_name='alias_list', on_delete=models.CASCADE, blank=True, null=True)
     alias = models.CharField(max_length=250, blank=True)
 
+    def __str__(self):
+        return  self.alias
+
 class Additional_info(models.Model):
-    author_ID = models.ForeignKey(Author, to_field='author_id', on_delete=models.CASCADE, blank=True, null=True)
-    add_comments = models.CharField(max_length=250, blank=True)
+    author = models.ForeignKey(Author, to_field='author_id', related_name='additional_info_list', on_delete=models.CASCADE, blank=True, null=True)
+    add_comments = models.TextField(max_length=200000, blank=True, null=True)
+
+    def __str__(self):
+        if self.add_comments:
+            return  self.add_comments
+        else:
+            return ''
 
 class Location_time(models.Model):
-    author_ID = models.ForeignKey(Author, to_field='author_id', on_delete=models.CASCADE, blank=True, null=True)
+    author = models.ForeignKey(Author, to_field='author_id', on_delete=models.CASCADE, related_name="location_time_list", blank=True, null=True)
     geo_location_name = models.CharField(max_length=250, blank=True)
     fr_province = models.CharField(max_length=250, blank=True)
     date = models.CharField(max_length=250, blank=True)
-    date_precision_id = models.ForeignKey(Date_precision, to_field='date_precision_id', on_delete=models.CASCADE, blank=True, null=True)
+    date_precision = models.ForeignKey(Date_precision, to_field='date_precision_id', on_delete=models.CASCADE, related_name='location_times_date_precision', blank=True, null=True)
 
-
+    def __str__(self):
+        return  self.geo_location_name
 
 
 

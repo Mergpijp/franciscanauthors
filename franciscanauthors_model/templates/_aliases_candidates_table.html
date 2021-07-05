@@ -1,0 +1,123 @@
+<div id="aliases-candidates-div">
+<table class="table">
+  <thead>
+  <tr>
+    <th class="text-center" scope="col">ID</th>
+    <th class="text-center" scope="col">Alias</th>
+  </tr>
+  </thead>
+  <tbody>
+  {% for alias in aliases.all %}
+    <tr>
+      <th class="text-center" scope="row">{{ alias.pk }}</th>
+      <td class="text-center">{{ alias.alias }}</td>
+      <td class="text-center">
+        <!-- Update alias buttons -->
+        <button type="button" id='init-btn-a{{ alias.pk }}' class="btn btn-primary btn-danger" data-toggle="modal" data-target="#UpdateAlias{{ alias.pk }}">
+          <span class="fa fa-pencil"></span>
+        </button>
+            <!-- Modal -->
+    <div id="UpdateAlias{{ alias.pk }}" class="modal fade" tabindex="-1" role="dialog">
+      <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title col-md-10">Update Alias</h5>
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+          </div>
+          <div class="modal-body">
+            <div class="form-group">
+                <label for="id_alias{{ alias.pk }}">Alias</label>
+                <input type="text" name="name" maxlength="250" value="{{ alias.alias }}" class="form-control year" id="id_alias{{ alias.pk }}">
+                <div class="">
+
+                </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" id="close-btn-a{{ alias.pk }}" class="btn btn-default" data-dismiss="modal">Close</button>
+            <button type="button" id="update-btn-a{{ alias.pk }}" class="submit-btn btn btn-primary" data-form-url="{% url 'alias-process' author.pk alias.pk %}" data-dismiss="modal">Update</button>
+          </div>
+        </div>
+      </div>
+    </div>
+        <!-- Link alias buttons -->
+        <button type="button" id="alias-link{{ alias.pk }}" class="alias-link btn btn-sm btn-danger" data-form-url="{% url 'link-alias' author.pk alias.pk %}">
+          <span class="fa fa-plus mr-2"></span>Link
+        </button>
+      </td>
+    </tr>
+
+<script>
+$(function () {
+$("#update-btn-a{{ alias.pk }}").click(function(e) {
+    var data = {
+        csrfmiddlewaretoken: getCookie('csrftoken'),
+        alias: $('#id_alias{{ alias.pk }}').val(),
+    }
+    $.post($(this).attr('data-form-url'), data, function(data,status){
+        if(status === 'success') {
+            $('#id_search_aliases').val('');
+            $("#aliases-div").html(data["table"]);
+        }
+    });
+})
+function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie != '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = jQuery.trim(cookies[i]);
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+});
+</script>
+{% endfor %}
+
+  </tbody>
+</table>
+
+<script>
+$(function () {
+$( ".alias-link" ).click(function() {
+    var data_cookie = {
+        csrfmiddlewaretoken: getCookie('csrftoken'),
+    }
+    $.post($(this).attr('data-form-url'), data_cookie, function(data, status){
+        if(status === 'success') {
+            $("#alias-div").html(data["table"]);
+            $('#id_search_aliases').val('');
+            $.post("{% url 'search-alias' author.pk %}", data_cookie, function(data2, status2){
+                if(status2 === 'success') {
+                    $("#aliases-candidates-div").html(data2["table"]);
+                }
+
+            })
+        }
+    });
+    })
+function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie != '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = jQuery.trim(cookies[i]);
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+});
+</script>
+</div>

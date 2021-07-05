@@ -14,14 +14,34 @@
     </thead>
     <tbody>  
     <tr>  
-        <td>{{ author.name }}</td>
+        <td>{{ author.author_name }}</td>
         <td>{{ author.biography}}</td>
         <td>{{ author.birth }}</td>
         <td>{{ author.death }}</td>
     </tr>
     </tbody>
 </table>
-{% if author.location_time_set.all  %}
+{% if author.alias_list.all  %}
+<p><b>Alias</b></p>
+<table class="table table-striped table-bordered table-sm">
+    <thead class="thead-light">
+    <tr>
+        <th>Alias</th>
+    </tr>
+    </thead>
+    <tbody>
+{% for a in author.alias_list.all %}
+    <tr>
+        <td>{{a.alias}}</td>
+    </tr>
+{% empty %}
+     </br>
+{% endfor %}
+    </tbody>
+</table>
+</br>
+{% endif %}
+{% if author.location_time_list.all  %}
 <p><b>Location times</b></p>
 <table class="table table-striped table-bordered table-sm">
     <thead class="thead-light">
@@ -32,7 +52,7 @@
     </tr>
     </thead>
     <tbody>
-{% for lt in author.location_time_set.all %}
+{% for lt in author.location_time_list.all %}
     <tr>
         <td>{{lt.geo_location_name}}</td>
         <td>{{lt.fr_province}}</td>
@@ -45,7 +65,7 @@
 </table>
 </br>
 {% endif %}
-{% if author.works_set.all  %}
+{% if author.works_author_list %}
 <p><b>Works</b></p>
 <table class="table table-striped table-bordered table-sm">
     <thead class="thead-light">
@@ -55,36 +75,18 @@
         <th>Publisher</th>
         <th>Location</th>
         <th>Detail description</th>
+        <th>Text</th>
     </tr>
     </thead>
     <tbody>
-{% for work in author.works_set.all %}
+{% for work in author.works_author_list.all %}
     <tr>
         <td>{{work.year}}</td>
         <td>{{work.title}}</td>
         <td>{{work.publisher}}</td>
         <td>{{work.location}}</td>
         <td>{{work.detail_description}}</td>
-    </tr>
-{% empty %}
-     </br>
-{% endfor %}
-    </tbody>
-</table>
-</br>
-{% endif %}
-{% if author.alias_set.all  %}
-<p><b>Alias</b></p>
-<table class="table table-striped table-bordered table-sm">
-    <thead class="thead-light">
-    <tr>
-        <th>Alias</th>
-    </tr>
-    </thead>
-    <tbody>
-{% for a in author.alias_set.all %}
-    <tr>
-        <td>{{a.alias}}</td>
+        <td>{{work.text}}</td>
     </tr>
 {% empty %}
      </br>

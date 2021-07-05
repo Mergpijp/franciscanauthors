@@ -1,3 +1,5 @@
+import pdb
+
 from bs4 import BeautifulSoup
 import re
 import bs4
@@ -8,21 +10,25 @@ letters = list(map(chr, range(97, 118)))
 anonymous = ['fraanony.htm']
 
 pk = 1
-pk_manuscripts = 1
-pk_manuscripts_editions = 1
-pk_editions = 1
-pk_translations = 1
-pk_editions_translations = 1
+#pk_manuscripts = 1
+#pk_manuscripts_editions = 1
+#pk_editions = 1
+#pk_translations = 1
+#pk_editions_translations = 1
 
 pk_author = 1
+pk_works = 1
+pk_literature = 1
 pk_date_precision = 1
+pk_additional_info = 1
+pk_alias = 1
 
 final_data = list()
 
 for let in letters:
 #for any in anonymous:
 
-    with open("../franciscanauthors_data/franaut"+let+".htm", "r") as f:
+    with open("../../franciscanauthors_data/franaut"+let+".htm", "r") as f:
     #with open("../franciscanauthors_data/"+any, "r") as f:
         contents = f.read()
 
@@ -110,7 +116,7 @@ for let in letters:
                         if isinstance(tag.nextSibling, bs4.element.Tag):
                             variable = variable + tag.text
                         else:
-                            variable = variable + tag.text + tag.nextSibling
+                             variable = variable + tag.text + tag.nextSibling
                     try:
                         tag = tag.nextSibling.nextSibling
                         if tag is None:
@@ -132,111 +138,42 @@ for let in letters:
         tag = lemma.find('p')
         name_bold = ''
         name = ''
-        manuscripts_bold = ''
-        manuscripts = ''
-        editions_bold = ''
-        editions = ''
-        translations_bold = ''
-        translations = ''
         literature_bold = ''
         literature = ''
+        works_bold = ''
+        works = ''
 
         (name_bold, end, tag) = var_bold_and_next_sentence(name_bold, end, tag)
         (name, end, tag) = find_content(name, end, tag)
-        (manuscripts_bold, end, tag) = var_bold_and_next_sentence(manuscripts_bold, end, tag)
-        (manuscripts, end, tag) = find_content(manuscripts, end, tag)
-        (editions_bold, end, tag) = var_bold_and_next_sentence(editions_bold, end, tag)
-        (editions, end, tag) = find_content(editions, end, tag)
-        (translations_bold, end, tag) = var_bold_and_next_sentence(translations_bold, end, tag)
-        (translations, end, tag) = find_content(translations, end, tag)
         (literature_bold, end, tag) = var_bold_and_next_sentence(literature_bold, end, tag)
         (literature, end, tag) = find_content(literature, end, tag)
-
-        data.append((name_bold, name, manuscripts_bold, manuscripts, editions_bold, editions, translations_bold, translations,
-                     literature_bold, literature))
+        (works_bold, end, tag) = var_bold_and_next_sentence(works_bold, end, tag)
+        (works, end, tag) = find_content(works, end, tag)
+        data.append((name_bold, name, works_bold, works, literature_bold, literature))
 
     def helper(title):
-        match = re.search('^(L|l)iterature((?!(/|&)).)*$|literatuur', title)
+        match = re.search('^works', title)
         if match:
             return 2
-        match = re.search('^(E|e)diti?ons?((?!(/| and )).)*$|(E|e)dities((?!(/|en)).)*$|^Partial editions|editions/editions', title)
+        match = re.search('^(L|l)iterature((?!(/|&)).)*$|literatuur', title)
         if match:
             return 3
-        match = re.search('^(m|M)anus?c?r?ipt?s?((?!(/|&| and )).)*$|(Latin|Some) manuscripts|mss|manuscripts \(predominantly based on Brady and Bougerol\)' \
-                          , title)
-        if match:
-            return 4
-        match = re.search('(m|M)anus(c?)(r?)ip(t?)s(/| and | & |/partial )(.?)edition(s?)((?!(/literature)).)*$|(E|e)ditions(/| and )manuscripts' \
-                          , title)
-        if match:
-            return 5
-        match = re.search('^editions( and |/)literature|^literature( and |/| & )editions', title)
-        if match:
-            return 6
-        match = re.search('^vitae?((?!(biographies)).)*$', title)
-        if match:
-            return 7
-        match = re.search('^vitae/biographies', title)
-        if match:
-            return 8
-        match = re.search('^works/editions', title)
-        if match:
-            return 9
-        match = re.search('^editions and music', title)
-        if match:
-            return 10
-        match = re.search('^surviving works', title)
-        if match:
-            return 11
-        match = re.search('^edities en studies^', title)
-        if match:
-            return 12
-        match = re.search('^manuscripts/editions/literature', title)
-        if match:
-            return 13
-        match = re.search('^Salimbene’s literary legacy.', title)
-        if match:
-            return 14
-        match = re.search('^editions and translations', title)
-        if match:
-            return 15
-        match = re.search('^studies', title)
-        if match:
-            return 16
-        match = re.search('^translations((?!(edities)).)*$', title)
-        if match:
-            return 17
-        match = re.search('^Primo, vita bona', title)
-        if match:
-            return 18
         return -1
 
     structured_data = list()
 
-    for name_bold, name, manuscripts_bold, manuscripts, edition_bold, edition, translation_bold, translation, literature_bold, literature in data:
+    for name_bold, name, work_bold, works, literature_bold, literature in data:
 
-        data_list = [name_bold, name, None, None, None, None, None, None, None, None, None, None, None \
-                     , None, None, None, None, None, None]
-
-        index = helper(manuscripts_bold)
+        data_list = [name_bold, name, None, None]
+        index = helper(work_bold)
         if index != -1:
-            data_list[index] = manuscripts
-        index = helper(edition_bold)
-        if index != -1:
-            data_list[index] = edition
-        index = helper(translation_bold)
-        if index != -1:
-            data_list[index] = translation
+            data_list[index] = works
         index = helper(literature_bold)
         if index != -1:
             data_list[index] = literature
-
         structured_data.append(tuple(data_list))
 
-    for idx, (name_bold, name, literature, editions, manuscripts, manuscripts_editions, literature_editions, \
-              vitea, vitea_biographies, works_editions, editions_music, surviving_works, edities_studies, \
-              manuscripts_editions_literature, salimbenes_literary_legacy, editions_translations, \
-              studies, translations, primo_vita_bona) in enumerate(structured_data):
+    for idx, (name_bold, name, works, literature) in enumerate(structured_data):
         name_date = None
         name_original = None
         x = re.search('\(([^\)]+)\)', name_bold)
@@ -349,12 +286,14 @@ for let in letters:
              ('manuscripts_editions_literature', manuscripts_editions_literature), ('salimbenes_literary_legacy', salimbenes_literary_legacy), \
              ('editions_translations', list_editions_translations), ('studies', studies), ('translations', list_translations), ('primo_vita_bona', primo_vita_bona), ('letter', let)]
         '''
-        list_date = []
+        #list_date = []
+        list_date = 0
         if name_date:
             my_dict = dict()
-            my_dict['model'] = 'franciscanauthors_model.Date_precision'
+            my_dict['model'] = 'franciscanauthors_model.date_precision'
             my_dict['pk'] = pk_date_precision
-            list_date.append(pk_date_precision)
+            #list_date.append(str(pk_date_precision))
+            list_date = pk_date_precision
             date_precision = ''
             if name_date:
                 date_precision = name_date
@@ -368,19 +307,53 @@ for let in letters:
 
         my_dict = dict()
         my_dict['model'] = 'franciscanauthors_model.author'
-        my_dict['fields'] = {'author_name': name_latin + " " + name_original,
+        if name_original == None:
+            name_original = ""
+        my_dict['fields'] = {'author_name': name_original,
                   'biography': personalia,
                   'birth': '', 'death': '',
-                  'birth_date_precision_id': list_date,
-                  'death_date_precision_id': list_date,
                   'checked': False,
                   }
+        if list_date != 0:
+            my_dict['fields']['birth_date_precision'] = list_date
+            my_dict['fields']['death_date_precision'] = list_date
         my_dict['pk'] = pk_author
-        pk_author += 1
+        final_data.append(my_dict)
+
+        if name_latin == None:
+            name_latin = ""
+
+        my_dict = dict()
+        my_dict['model'] = 'franciscanauthors_model.alias'
+        my_dict['fields'] = {'author_id': pk_author, 'alias': name_latin}
+        my_dict['pk'] = pk_alias
+        final_data.append(my_dict)
+
+        pk_alias += 1
 
         my_dict = dict()
         my_dict['model'] = 'franciscanauthors_model.works'
-        my_dict['fields'] = {'year': }
+        my_dict['fields'] = {'author_id':pk_author ,'text': works}
+        my_dict['pk'] = pk_works
+        final_data.append(my_dict)
+
+        my_dict = dict()
+        my_dict['model'] = 'franciscanauthors_model.works'
+        my_dict['fields'] = {'author_id':pk_author ,'text': works}
+        my_dict['pk'] = pk_works
+        final_data.append(my_dict)
+
+        my_dict = dict()
+        my_dict['model'] = 'franciscanauthors_model.additional_info'
+        my_dict['fields'] = {'author_id':pk_author ,'add_comments': literature}
+        my_dict['pk'] = pk_additional_info
+        final_data.append(my_dict)
+
+        pk_author += 1
+        pk_works += 1
+        pk_additional_info += 1
+
+        #my_dict['fields'] = {'year': }
 
         '''
         my_dict = dict()
@@ -391,5 +364,5 @@ for let in letters:
         final_data.append(my_dict)
         '''
 
-with open('../franciscanauthors_data/fixtures/fixture_good.json', 'w') as f:
+with open('../../franciscanauthors_data/fixtures/fixture_5-07.json', 'w') as f:
     json.dump(final_data, f, indent=2)

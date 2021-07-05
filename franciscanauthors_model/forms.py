@@ -13,6 +13,17 @@ class AuthorForm(forms.ModelForm):
         Added field with buttons for inline add. Is almost the same as PublicationForm but has a submit button.
 
     '''
+    birth_date_precision = forms.ModelChoiceField(widget=ModelSelect2Widget(
+        model=Date_precision,
+        search_fields=['date_precision__icontains', ],
+        attrs={'data-minimum-input-length': 0},
+    ), queryset=Date_precision.objects.all(), required=False)
+    death_date_precision = forms.ModelChoiceField(widget=ModelSelect2Widget(
+        model=Date_precision,
+        search_fields=['date_precision__icontains', ],
+        attrs={'data-minimum-input-length': 0},
+    ), queryset=Date_precision.objects.all())
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
@@ -20,6 +31,9 @@ class AuthorForm(forms.ModelForm):
         self.fields['biography'].required = False
         self.fields['birth'].required = False
         self.fields['death'].required = False
+        self.fields['death_date_precision'].required = False
+        self.fields['birth_date_precision'].required = False
+        self.fields['checked'].required = False
 
         self.helper.layout = Layout(
             TabHolder(
@@ -28,13 +42,22 @@ class AuthorForm(forms.ModelForm):
                     'biography',
                     'birth',
                     'death',
-                HTML("""{% include "_author.html" %}"""),
+                    'birth_date_precision',
+                    'death_date_precision',
+                    'checked',
                 ),
             Tab('Location times',
                 HTML("""{% include "_location_time.html" %}"""),
+
                 ),
             Tab('Works',
                 HTML("""{% include "_works.html" %}"""),
+                ),
+            Tab('Aliases',
+                    HTML("""{% include "_alias.html" %}"""),
+                ),
+            Tab('Additional infos',
+                HTML("""{% include "_additional_info.html" %}"""),
                 ),
             ),
             ButtonHolder(
@@ -48,7 +71,8 @@ class AuthorForm(forms.ModelForm):
     class Meta:
         model = Author
         # See note here: https://docs.djangoproject.com/en/1.10/ref/contrib/admin/#django.contrib.admin.ModelAdmin.form
-        fields = ('author_name', 'biography', 'birth', 'death')
+        fields = ('author_name', 'biography', 'birth', 'death', 'birth_date_precision', 'death_date_precision', \
+                  'checked')
 
 class WorkForm(forms.ModelForm):
     '''
@@ -56,6 +80,7 @@ class WorkForm(forms.ModelForm):
         Added field with buttons for inline add. Is almost the same as PublicationForm but has a submit button.
 
     '''
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
@@ -82,7 +107,7 @@ class WorkForm(forms.ModelForm):
     class Meta:
         model = Works
         # See note here: https://docs.djangoproject.com/en/1.10/ref/contrib/admin/#django.contrib.admin.ModelAdmin.form
-        fields = ('year', 'title', 'publisher', 'location', 'detail_descriptions',)
+        fields = ('year', 'title', 'publisher', 'location', 'detail_descriptions', 'date_precision',)
 
 class LocationTimeForm(forms.ModelForm):
     '''
@@ -172,13 +197,43 @@ class Date_precision_form(forms.ModelForm):
         Added field with buttons for inline add. Is almost the same as PublicationForm but has a submit button.
 
     '''
+    authors_birth_date = forms.ModelMultipleChoiceField(widget=ModelSelect2MultipleWidget(
+        model=Author,
+        search_fields=['author_name__icontains', ],
+        attrs={'data-minimum-input-length': 0},
+    ), queryset=Author.objects.all(), required=False)
+    authors_death_date = forms.ModelMultipleChoiceField(widget=ModelSelect2MultipleWidget(
+        model=Author,
+        search_fields=['author_name__icontains', ],
+        attrs={'data-minimum-input-length': 0},
+    ), queryset=Author.objects.all())
+    works_date_list = forms.ModelMultipleChoiceField(widget=ModelSelect2MultipleWidget(
+        model=Works,
+        search_fields=['title__icontains', ],
+        attrs={'data-minimum-input-length': 0},
+    ), queryset=Works.objects.all())
+    location_times_date_precision = forms.ModelMultipleChoiceField(widget=ModelSelect2MultipleWidget(
+        model=Location_time,
+        search_fields=['geo_location_name__icontains', ],
+        attrs={'data-minimum-input-length': 0},
+    ), queryset=Location_time.objects.all())
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.fields['date_precision'].required = False
+        self.fields['authors_birth_date'].required = False
+        self.fields['authors_death_date'].required = False
+        self.fields['works_date_list'].required = False
+        self.fields['location_times_date_precision'].required = False
+
 
         self.helper.layout = Layout(
                     'date_precision',
+                    'authors_birth_date',
+                    'authors_death_date',
+                    'works_date_list',
+                    'location_times_date_precision',
             ButtonHolder(
                 Submit('save_add_another', 'Save and add another', css_class='btn-save btn-danger'),
                 Submit('save_and_continue_editing', 'Save and continue editing', css_class='btn-save btn-danger'),
@@ -204,7 +259,14 @@ class GenreForm(forms.ModelForm):
         self.fields['genre_description'].required = False
 
         self.helper.layout = Layout(
-                    'genre_descr',
+            TabHolder(
+                Tab('Genre',
+                    'genre_description',
+                    ),
+                Tab('Genre groups',
+                    HTML("""{% include "_genre_groups.html" %}"""),
+                    ),
+            ),
             ButtonHolder(
                 Submit('save_add_another', 'Save and add another', css_class='btn-save btn-danger'),
                 Submit('save_and_continue_editing', 'Save and continue editing', css_class='btn-save btn-danger'),

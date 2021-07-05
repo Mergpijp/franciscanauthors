@@ -6,6 +6,7 @@
     <th class="text-center" scope="col">Geo location name</th>
     <th class="text-center" scope="col">Fr province</th>
     <th class="text-center" scope="col">Date</th>
+    <th class="text-center" scope="col">Date precision id</th>
     <th class="text-center" scope="col">Unlink</th>
   </tr>
   </thead>
@@ -16,6 +17,7 @@
       <td class="text-center">{{ lt.geo_location_name }}</td>
       <td class="text-center">{{ lt.fr_province }}</td>
       <td class="text-center">{{ lt.date }}</td>
+      <td class="text-center">{{ lt.date_precision_id }}</td>
       <td class="text-center">
         <!-- Unlink author buttons -->
         <button type="button" class="location_time-unlink btn btn-sm btn-danger" data-form-url="{% url 'unlink-location_time' author.pk lt.pk %}">
