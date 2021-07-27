@@ -1,58 +1,52 @@
 {% extends "base.html" %}
 {% block content %}
-<table class="table table-striped table-bordered table-sm">
-    <col>
-    <colgroup span="4"></colgroup>
-    <colgroup span="3"></colgroup>
-    <colgroup span="5"></colgroup>
-    <colgroup span="1"></colgroup>
-    <colgroup span="1"></colgroup>
+<br/>
+<form action="{% url 'author-show' %}?{{ request.GET.urlencode }}" method="post">
+    {% csrf_token %}
+    <input type="submit" value="Export xml" style="margin:0px auto; display:block;"/>
+</form>
+<br />
+<div class="pagination" id="letter_box">
+    <span class="step-links">
+        {% for letter in alphabet_list %}
+            <a href="?page={{letter}}&order_by={{order_by}}&direction={{ direction }}">{{ letter|title }}</a>
+        {% endfor %}
+
+        <span class="current">
+            Page {{ current }} of Z.
+        </span>
+
+    </span>
+</div>
+<table class="table table-striped table-bordered table-sm col-xs-1" id="author_table">
 
     <thead class="thead-light">
-    <tr>
-        <th colspan="4" scope="colgroup">Author</th>
-        <th colspan="3" scope="colgroup">Location time</th>
-        <th colspan="5" scope="colgroup">Works</th>
-        <th colspan="1" scope="colgroup">Alias</th>
-        <th colspan="1" scope="colgroup">Additional info</th>
-    </tr>
+
     <tr>
         <th scope="col">Name<br/><a href="?q={{ q }}&order_by=name&direction=asc" class="arrow up"></a> <a href="?q={{ q }}&order_by=name&direction=desc" class="arrow down"></a></th>
+        <th scope="col">Affiliation <br/><a href="?q={{ q }}&order_by=affiliation&direction=asc" class="arrow up"></a> <a href="?q={{ q }}&order_by=affiliation&direction=desc" class="arrow down"></a></th>
         <th scope="col">Biography <br/><a href="?q={{ q }}&order_by=biography&direction=asc" class="arrow up"></a> <a href="?q={{ q }}&order_by=biography&direction=desc" class="arrow down"></a></th>
         <th scope="col">Birth<br/><a href="?q={{ q }}&order_by=birth&direction=asc" class="arrow up"></a> <a href="?q={{ q }}&order_by=birth&direction=desc" class="arrow down"></a></th>
         <th scope="col">Death<br/><a href="?order_by=death&direction=asc" class="arrow up"></a> <a href="?order_by=death&direction=desc" class="arrow down"></a> </th>
-        <th scope="col">Geo location name<br/><a href="?order_by=geo_location_name&direction=asc" class="arrow up"></a> <a href="?order_by=geo_location_name&direction=desc" class="arrow down"></a></th>
-        <th scope="col">Fr province<br/><a href="?order_by=fr_provincer&direction=asc" class="arrow up"></a> <a href="?order_by=fr_provincer&direction=desc" class="arrow down"></a></th>
-        <th scope="col">Date<br/><a href="?order_by=date&direction=asc" class="arrow up"></a> <a href="?order_by=date&direction=desc" class="arrow down"></a></th>
-        <th scope="col">Year<br/><a href="?order_by=year&direction=asc" class="arrow up"></a> <a href="?order_by=year&direction=desc" class="arrow down"></a></th>
-        <th scope="col">Title<br/><a href="?order_by=title&direction=asc" class="arrow up"></a> <a href="?order_by=title&direction=desc" class="arrow down"></a></th>
-        <th scope="col">Publisher<br/><a href="?order_by=publisher&direction=asc" class="arrow up"></a> <a href="?order_by=publisher&direction=desc" class="arrow down"></a></th>
-        <th scope="col">Location<br/><a href="?order_by=location&direction=asc" class="arrow up"></a> <a href="?order_by=location&direction=desc" class="arrow down"></a></th>
-        <th scope="col">Detail descriptions<br/><a href="?order_by=year&detaiL_descriptions=asc" class="arrow up"></a> <a href="?order_by=year&detaiL_descriptions=desc" class="arrow down"></a></th>
+        <th scope="col">Birth date precision<br/><a href="?q={{ q }}&order_by=birth_date_precision&direction=asc" class="arrow up"></a> <a href="?q={{ q }}&order_by=birth_date_precision&direction=desc" class="arrow down"></a></th>
+        <th scope="col">Death date precision<br/><a href="?q={{ q }}&order_by=death_date_precision&direction=asc" class="arrow up"></a> <a href="?q={{ q }}&order_by=death_date_precision&direction=desc" class="arrow down"></a></th>
         <th scope="col">Alias<br/><a href="?order_by=alias&direction=asc" class="arrow up"></a> <a href="?order_by=alias&direction=desc" class="arrow down"></a></th>
-        <th scope="col">Add comments<br/><a href="?order_by=add_comments&direction=asc" class="arrow up"></a> <a href="?order_by=add_comments&direction=desc" class="arrow down"></a></th>
         <th>Actions</th>
 
     </tr>  
     </thead>
     <tbody>
     <br />
-{% for author in authors %}
+{% for author in page_authors %}
     <tr id="authors">
         <td>{{ author.get_truncated_author_name }}</td>
+        <td>{{ author.get_truncated_affiliation }}</td>
         <td>{{ author.get_truncated_biography }}</td>
         <td>{{ author.get_truncated_birth }}</td>
         <td>{{ author.get_truncated_death }}</td>
-        <td>{{ author.get_truncated_geo_location_name }}</td>
-        <td>{{ author.get_truncated_fr_province }}</td>
-        <td>{{ author.get_truncated_date }}</td>
-        <td>{{ author.get_truncated_year }}</td>
-        <td>{{ author.get_truncated_title }}</td>
-        <td>{{ author.get_truncated_publisher }}</td>
-        <td>{{ author.get_truncated_location }}</td>
-        <td>{{ author.get_truncated_detail_descriptions }}</td>
-        <td>{{ author.get_truncated_alias }}</td>
-        <td>{{ author.get_truncated_add_comments }}</td>
+        <td>{{ author.get_truncated_birth_date_precision }}</td>
+        <td>{{ author.get_truncated_death_date_precision }}</td>
+        <td>{{ author.get_truncated_detail_alias }}</td>
         <td>
             <a href="/author/{{ author.pk }}/detail_view">View</a>
             <a href="/author/{{ author.pk }}/edit?next={{ request.get_full_path }}"><span class="glyphicon glyphicon-pencil" >Edit</span></a>
@@ -62,22 +56,5 @@
 {% endfor %}
     </tbody>  
 </table>
-<div class="pagination">
-    <span class="step-links">
-        {% if page_obj.has_previous %}
-            <a href="?q={{ q }}&page=1&order_by={{order_by}}&direction={{ direction }}">&laquo; first</a>
-            <a href="?q={{ q }}&page={{ page_obj.previous_page_number }}&order_by={{order_by}}&direction={{ direction }}">previous</a>
-        {% endif %}
-
-        <span class="current">
-            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
-        </span>
-
-        {% if page_obj.has_next %}
-            <a href="?q={{ q }}&page={{ page_obj.next_page_number }}&order_by={{order_by}}&direction={{ direction }}">next</a>
-            <a href="?q={{ q }}&page={{ page_obj.paginator.num_pages }}&order_by={{order_by}}&direction={{ direction }}">last &raquo;</a>
-        {% endif %}
-    </span>
-</div>
 
 {% endblock %}

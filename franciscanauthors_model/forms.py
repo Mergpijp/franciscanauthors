@@ -28,6 +28,7 @@ class AuthorForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.fields['author_name'].required = False
+        self.fields['affiliation'].required = False
         self.fields['biography'].required = False
         self.fields['birth'].required = False
         self.fields['death'].required = False
@@ -39,11 +40,13 @@ class AuthorForm(forms.ModelForm):
             TabHolder(
             Tab('Author',
                     'author_name',
+                    'affiliation',
                     'biography',
                     'birth',
                     'death',
                     'birth_date_precision',
                     'death_date_precision',
+                    HTML("""{% include "_date_precision_modal.html" %}"""),
                     'checked',
                 ),
             Tab('Location times',
@@ -72,7 +75,7 @@ class AuthorForm(forms.ModelForm):
         model = Author
         # See note here: https://docs.djangoproject.com/en/1.10/ref/contrib/admin/#django.contrib.admin.ModelAdmin.form
         fields = ('author_name', 'biography', 'birth', 'death', 'birth_date_precision', 'death_date_precision', \
-                  'checked')
+                  'checked', 'affiliation',)
 
 class WorkForm(forms.ModelForm):
     '''
@@ -81,21 +84,40 @@ class WorkForm(forms.ModelForm):
 
     '''
 
+    date_precision = forms.ModelChoiceField(widget=ModelSelect2Widget(
+        model=Date_precision,
+        search_fields=['date_precision__icontains', ],
+        attrs={'data-minimum-input-length': 0},
+    ), queryset=Date_precision.objects.all())
+    genre = forms.ModelChoiceField(widget=ModelSelect2Widget(
+        model=Genre,
+        search_fields=['date_precision__icontains', ],
+        attrs={'data-minimum-input-length': 0},
+    ), queryset=Genre.objects.all())
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
+        self.fields['text'].required = False
         self.fields['year'].required = False
         self.fields['title'].required = False
         self.fields['publisher'].required = False
         self.fields['location'].required = False
         self.fields['detail_descriptions'].required = False
+        self.fields['date_precision'].required = False
+        self.fields['genre'].required = False
 
         self.helper.layout = Layout(
+                    'text',
                     'year',
                     'title',
                     'publisher',
                     'location',
                     'detail_descriptions',
+                    'date_precision',
+                    HTML("""{% include "_date_precision_modal.html" %}"""),
+                    'genre',
+                    HTML("""{% include "_genre_modal.html" %}"""),
             ButtonHolder(
                 Submit('save_add_another', 'Save and add another', css_class='btn-save btn-danger'),
                 Submit('save_and_continue_editing', 'Save and continue editing', css_class='btn-save btn-danger'),
@@ -107,7 +129,7 @@ class WorkForm(forms.ModelForm):
     class Meta:
         model = Works
         # See note here: https://docs.djangoproject.com/en/1.10/ref/contrib/admin/#django.contrib.admin.ModelAdmin.form
-        fields = ('year', 'title', 'publisher', 'location', 'detail_descriptions', 'date_precision',)
+        fields = ('text','year', 'title', 'publisher', 'location', 'detail_descriptions', 'date_precision', 'genre',)
 
 class LocationTimeForm(forms.ModelForm):
     '''
@@ -279,6 +301,7 @@ class GenreForm(forms.ModelForm):
         model = Genre
         # See note here: https://docs.djangoproject.com/en/1.10/ref/contrib/admin/#django.contrib.admin.ModelAdmin.form
         fields = ('genre_description',)
+        #exclude = ('genre_group',)
 
 class Genre_group_form(forms.ModelForm):
     '''
@@ -292,7 +315,14 @@ class Genre_group_form(forms.ModelForm):
         self.fields['genre_group'].required = False
 
         self.helper.layout = Layout(
-                    'genre_group',
+                    TabHolder(
+                        Tab('Genre Group',
+                        'genre_group',
+                            ),
+                        Tab('Genres',
+                            HTML("""{% include "_genres.html" %}"""),
+                            ),
+                    ),
             ButtonHolder(
                 Submit('save_add_another', 'Save and add another', css_class='btn-save btn-danger'),
                 Submit('save_and_continue_editing', 'Save and continue editing', css_class='btn-save btn-danger'),
@@ -305,3 +335,4 @@ class Genre_group_form(forms.ModelForm):
         model = Genre_group
         # See note here: https://docs.djangoproject.com/en/1.10/ref/contrib/admin/#django.contrib.admin.ModelAdmin.form
         fields = ('genre_group',)
+        exclude = ('genre',)

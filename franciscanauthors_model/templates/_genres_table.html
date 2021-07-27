@@ -1,0 +1,52 @@
+<div id="genres-div">
+<table class="table">
+  <thead>
+  <tr>
+    <th class="text-center" scope="col">ID</th>
+    <th class="text-center" scope="col">Genre description</th>
+  </tr>
+  </thead>
+  <tbody>
+  {% for genre in genre_group.genre.all %}
+    <tr>
+      <th class="text-center" scope="row">{{ genre.pk }}</th>
+      <td class="text-center">{{ genre.genre_description}}</td>
+      <td class="text-center">
+        <!-- Unlink work buttons -->
+        <button type="button" class="genre-unlink btn btn-sm btn-danger" data-form-url="{% url 'unlink-genre' genre_group.pk genre.pk %}">
+          <span class="fa fa-trash"></span> Unlink
+        </button>
+      </td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+<script>
+function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie != '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = jQuery.trim(cookies[i]);
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+ $( ".genre-unlink" ).click(function() {
+     var data = {
+        csrfmiddlewaretoken: getCookie('csrftoken'),
+    }
+    $.post($(this).attr('data-form-url'), data, function(data, status){
+        if(status === 'success') {
+            $("#genres-div").html(data["table"]);
+        }
+    });
+});
+</script>
+</div>

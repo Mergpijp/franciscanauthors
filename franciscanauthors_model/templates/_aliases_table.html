@@ -7,13 +7,13 @@
   </tr>
   </thead>
   <tbody>
-  {% for alias in author.alias_set.all %}
+  {% for al in author.alias_list.all %}
     <tr>
-      <th class="text-center" scope="row">{{ alias.pk }}</th>
-      <td class="text-center">{{ alias.alias}}</td>
+      <th class="text-center" scope="row">{{ al.pk }}</th>
+      <td class="text-center">{{ al.alias}}</td>
       <td class="text-center">
         <!-- Unlink work buttons -->
-        <button type="button" class="alias-unlink btn btn-sm btn-danger" data-form-url="{% url 'unlink-alias' author.pk alias.pk %}">
+        <button type="button" class="alias-unlink btn btn-sm btn-danger" data-form-url="{% url 'unlink-alias' author.pk al.pk %}">
           <span class="fa fa-trash"></span> Unlink
         </button>
       </td>

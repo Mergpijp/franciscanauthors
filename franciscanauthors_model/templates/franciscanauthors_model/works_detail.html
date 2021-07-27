@@ -12,6 +12,9 @@
         <th>Publisher</th>
         <th>Location</th>
         <th>Detail description</th>
+        <th>Date precision</th>
+        <th>Genre</th>
+        <th>Genre groups</th>
         <th>Text</th>
     </tr>
     </thead>
@@ -27,6 +30,13 @@
         <td>{{works.publisher}}</td>
         <td>{{works.location}}</td>
         <td>{{works.detail_description}}</td>
+        <td>{{works.date_precision.date_precision}}</td>
+        <td>{{works.genre.genre_description}}</td>
+        <td>
+            {% if works.genre.genre_group_genres.all %}
+                {{ works.genre.genre_group_genres.all|join:", " }}.
+            {% endif %}
+        </td>
         <td>{{works.text}}</td>
     </tr>
 

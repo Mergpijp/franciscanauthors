@@ -92,7 +92,7 @@ $( ".alias-link" ).click(function() {
     }
     $.post($(this).attr('data-form-url'), data_cookie, function(data, status){
         if(status === 'success') {
-            $("#alias-div").html(data["table"]);
+            $("#aliases-div").html(data["table"]);
             $('#id_search_aliases').val('');
             $.post("{% url 'search-alias' author.pk %}", data_cookie, function(data2, status2){
                 if(status2 === 'success') {

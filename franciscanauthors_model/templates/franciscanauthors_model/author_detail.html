@@ -7,17 +7,23 @@
     <thead class="thead-light">  
     <tr>  
         <th>Name</th>
+        <th>Affiliation</th>
         <th>Biography</th>
         <th>Birth</th>
         <th>Death</th>
+        <th>Birth date precision</th>
+        <th>Death date precision</th>
     </tr>
     </thead>
     <tbody>  
     <tr>  
         <td>{{ author.author_name }}</td>
+        <td>{{ author.affiliation }}</td>
         <td>{{ author.biography}}</td>
         <td>{{ author.birth }}</td>
         <td>{{ author.death }}</td>
+        <td>{{ author.get_truncated_birth_date_precision }}</td>
+        <td>{{ author.get_truncated_death_date_precision}}</td>
     </tr>
     </tbody>
 </table>

@@ -5,3 +5,6 @@ django-redis
 django-pdb
 Markdown
 django_crispy_forms
+django-import-export
+django-import-export-xml
+dicttoxml

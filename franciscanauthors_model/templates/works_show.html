@@ -14,10 +14,16 @@
     </thead>
     <tbody>
     <br />
+        <center><a href="/work/new" class="btn btn-primary btn-danger">Add New Work </a></center>
+    <br/>
 {% for work in works %}
     <tr id="works">
         <td>{{ work.author.get_truncated_author_name }}</td>
-        <td>{{ work.year}}</td>
+        {% if work.year %}
+            <td>{{ work.year}}</td>
+        {% else %}
+            <td></td>
+        {% endif %}
         <td>{{ work.title }}</td>
         <td>{{ work.publisher }}</td>
         <td>

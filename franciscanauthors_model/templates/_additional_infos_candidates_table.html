@@ -10,7 +10,7 @@
   {% for ai in additional_infos.all %}
     <tr>
       <th class="text-center" scope="row">{{ ai.pk }}</th>
-      <td class="text-center">{{ ai.add_comments }}</td>
+      <td class="text-center">{{ ai.get_truncated_add_comments }}</td>
       <td class="text-center">
         <!-- Update alias buttons -->
         <button type="button" id='init-btn-ai{{ ai.pk }}' class="btn btn-primary btn-danger" data-toggle="modal" data-target="#UpdateAdditionalInfo{{ ai.pk }}">
@@ -28,7 +28,7 @@
           <div class="modal-body">
             <div class="form-group">
                 <label for="id_add_comments{{ ai.pk }}">Add comments</label>
-                <input type="text" name="name" maxlength="250" value="{{ ai.additional_comments }}" class="form-control year" id="id_add_comments{{ ai.pk }}">
+                <input type="text" name="name" maxlength="250" value="{{ ai.get_truncated_add_comments }}" class="form-control year" id="id_add_comments{{ ai.pk }}">
                 <div class="">
 
                 </div>

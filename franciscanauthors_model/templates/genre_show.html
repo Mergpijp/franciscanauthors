@@ -4,6 +4,7 @@
     <thead class="thead-light">  
     <tr>  
         <th>genre description <a href="?order_by=genre_description&direction=asc" class="arrow up"></a> <a href="?order_by=genre_description&direction=desc" class="arrow down"></a> </th>
+        <th>genre groups <a href="?order_by=genre_group__genre_group&direction=asc" class="arrow up"></a> <a href="?order_by=genre_group__genre_group&direction=desc" class="arrow down"></a></th>
         <th>Actions</th>  
     </tr>  
     </thead> 
@@ -14,6 +15,11 @@
 {% for genre in genres %}
     <tr>  
         <td><a href="{% url 'author-show' %}?genre_id={{genre.pk}}">{{ genre.genre_description }}</a></td>
+        <td>
+        {% if genre.genre_group_set.all %}
+            {{ genre.genre_group_set.all|join:", " }}.
+        {% endif %}
+        </td>
         <td>  
             <a href="/genre/{{ genre.pk }}/edit?next={{ request.get_full_path }}"><span class="glyphicon glyphicon-pencil" >Edit</span></a>
             <a class="confirm-delete" href="/genre/{{ genre.pk }}/delete">Delete</a>

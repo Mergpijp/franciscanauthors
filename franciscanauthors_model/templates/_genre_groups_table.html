@@ -7,7 +7,7 @@
   </tr>
   </thead>
   <tbody>
-  {% for genre_group in genre.genre_group_set.all %}
+  {% for genre_group in genre.genre_group_genres.all %}
     <tr>
       <th class="text-center" scope="row">{{ genre_group.pk }}</th>
       <td class="text-center">{{ genre_group.genre_group}}</td>
@@ -22,6 +22,21 @@
   </tbody>
 </table>
 <script>
+function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie != '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = jQuery.trim(cookies[i]);
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
  $( ".genre_group-unlink" ).click(function() {
      var data = {
         csrfmiddlewaretoken: getCookie('csrftoken'),

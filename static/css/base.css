@@ -131,7 +131,25 @@ table.sortable th:not(.sorttable_sorted):not(.sorttable_sorted_reverse):not(.sor
     right: 684px;
     text-align: center;
 }
+#logo {
+    position: absolute;
+    right: 660px;
+}
+#content {
+    position: relative;
+    right: 50px;
+}
+#content-child {
+    position: absolute;
+}
+#letter_box {
+ position: fixed;
+ width : 46px;
+ height: 300px;
+ left: 580px;
+ top : 160px;
 
+}
 /*
 .modal-header{
   z-index:10000;

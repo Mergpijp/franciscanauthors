@@ -11,7 +11,7 @@
   </tr>
   </thead>
   <tbody>
-  {% for lt in author.location_time_set.all %}
+  {% for lt in author.location_time_list.all %}
     <tr>
       <th class="text-center" scope="row">{{ lt.pk }}</th>
       <td class="text-center">{{ lt.geo_location_name }}</td>

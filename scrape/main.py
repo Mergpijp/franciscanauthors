@@ -309,7 +309,7 @@ for let in letters:
         my_dict['model'] = 'franciscanauthors_model.author'
         if name_original == None:
             name_original = ""
-        my_dict['fields'] = {'author_name': name_original,
+        my_dict['fields'] = {'author_name': name_original.rstrip(','),
                   'biography': personalia,
                   'birth': '', 'death': '',
                   'checked': False,

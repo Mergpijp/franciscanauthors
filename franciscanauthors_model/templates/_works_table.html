@@ -3,6 +3,7 @@
   <thead>
   <tr>
     <th class="text-center" scope="col">ID</th>
+    <th class="text-center" scope="col">Text</th>
     <th class="text-center" scope="col">Year</th>
     <th class="text-center" scope="col">Title</th>
     <th class="text-center" scope="col">Publisher</th>
@@ -13,9 +14,10 @@
   </tr>
   </thead>
   <tbody>
-  {% for work in author.works_set.all %}
+  {% for work in author.works_author_list.all %}
     <tr>
       <th class="text-center" scope="row">{{ work.pk }}</th>
+      <td class="text-center">{{ work.get_truncated_text }}</td>
       <td class="text-center">{{ work.year}}</td>
       <td class="text-center">{{ work.title }}</td>
       <td class="text-center">{{ work.publisher }}</td>

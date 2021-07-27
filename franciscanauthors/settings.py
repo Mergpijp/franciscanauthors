@@ -41,7 +41,9 @@ INSTALLED_APPS = [
     'franciscanauthors_model',
     'bootstrap4',
     'crispy_forms',
+    'import_export',
 ]
+IMPORT_EXPORT_USE_TRANSACTIONS = True
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 MIDDLEWARE = [
@@ -97,8 +99,6 @@ DATABASES = {
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
-
-
 # Password validation
 # https://docs.djangoproject.com/en/3.0/ref/settings/#auth-password-validators
 

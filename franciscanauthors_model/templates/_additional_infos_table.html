@@ -7,10 +7,10 @@
   </tr>
   </thead>
   <tbody>
-  {% for additional_info in author.additional_info_set.all %}
+  {% for additional_info in author.additional_info_list.all %}
     <tr>
       <th class="text-center" scope="row">{{ additional_info.pk }}</th>
-      <td class="text-center">{{ additional_info.add_comments}}</td>
+      <td class="text-center">{{ additional_info.get_truncated_add_comments }}</td>
       <td class="text-center">
         <!-- Unlink work buttons -->
         <button type="button" class="additional_info-unlink btn btn-sm btn-danger" data-form-url="{% url 'unlink-additional_info' author.pk additional_info.pk %}">

@@ -13,11 +13,17 @@ class Genre(models.Model):
     def genre_groups(self):
         return Genre_group.objects.filter(genre=self)
 
+    def __str__(self):
+        return self.genre_description
+
 
 class Genre_group(models.Model):
     genre_group = models.CharField(max_length=250, blank=True)
-    genre = models.ForeignKey(Genre, to_field='genre_id', related_name='genre_group_list', on_delete=models.CASCADE, blank=True, null=True)
+    #genre = models.ForeignKey(Genre, to_field='genre_id', related_name='genre_group_list', on_delete=models.CASCADE, blank=True, null=True)
+    genre = models.ManyToManyField(Genre, related_name='genre_group_genres')
 
+    def __str__(self):
+        return self.genre_group
 
 class Date_precision(models.Model):
     date_precision_id = models.AutoField(primary_key=True)
@@ -29,6 +35,7 @@ class Date_precision(models.Model):
 
 class Author(models.Model):
     author_id = models.AutoField(primary_key=True)
+    affiliation = models.CharField(max_length=250, blank=True)
     author_name = models.CharField(max_length=250, blank=True)
     biography = models.TextField(max_length=2000, blank=True)
     birth = models.CharField(max_length=250, blank=True)
@@ -47,6 +54,13 @@ class Author(models.Model):
     @property
     def get_truncated_author_name(self):
         x = self.author_name
+        if len(x) > MAX_CHARS:
+            x = x[:MAX_CHARS] + '...'
+        return x
+
+    @property
+    def get_truncated_affiliation(self):
+        x = self.affiliation
         if len(x) > MAX_CHARS:
             x = x[:MAX_CHARS] + '...'
         return x
@@ -73,17 +87,21 @@ class Author(models.Model):
         return x
 
     @property
-    def get_truncated_birth_date_precision_id(self):
-        birth_dates = self.birth_dates
-        x = ', '.join([date.date_precision for date in birth_dates.all()])
+    def get_truncated_birth_date_precision(self):
+        if self.birth_date_precision:
+            x = self.birth_date_precision.date_precision
+        else:
+            return ''
         if len(x) > MAX_CHARS:
             x = x[:MAX_CHARS] + '...'
         return x
 
     @property
-    def get_truncated_death_date_precision_id(self):
-        death_dates = self.death_dates
-        x = ', '.join([date.date_precision for date in death_dates.all()])
+    def get_truncated_death_date_precision(self):
+        if self.death_date_precision:
+            x = self.death_date_precision.date_precision
+        else:
+            return ''
         if len(x) > MAX_CHARS:
             x = x[:MAX_CHARS] + '...'
         return x
@@ -185,6 +203,15 @@ class Works(models.Model):
         else:
             return 'title: ' + self.title
 
+    @property
+    def get_truncated_text(self):
+        x = self.text
+
+        if x and len(x) > MAX_CHARS:
+            x = x[:MAX_CHARS] + '...'
+        return x
+
+
 class Alias(models.Model):
     author = models.ForeignKey(Author, to_field='author_id', related_name='alias_list', on_delete=models.CASCADE, blank=True, null=True)
     alias = models.CharField(max_length=250, blank=True)
@@ -201,6 +228,13 @@ class Additional_info(models.Model):
             return  self.add_comments
         else:
             return ''
+
+    @property
+    def get_truncated_add_comments(self):
+        x = self.add_comments
+        if len(x) > MAX_CHARS:
+            x = x[:MAX_CHARS] + '...'
+        return x
 
 class Location_time(models.Model):
     author = models.ForeignKey(Author, to_field='author_id', on_delete=models.CASCADE, related_name="location_time_list", blank=True, null=True)

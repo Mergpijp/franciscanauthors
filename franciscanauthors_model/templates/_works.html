@@ -22,6 +22,13 @@
             <button type="button" class="close" data-dismiss="modal">&times;</button>
           </div>
           <div class="modal-body">
+            <div class="form_group">
+                <label for="id_text">Text</label>
+                <textarea name="text" maxlength="200000" placeholder="text" class="form-control" id="id_text">
+                </textarea>
+                <div class="">
+                </div>
+            </div>
             <div class="form-group">
                 <label for="id_year">Year</label>
                 <input type="number" name="year" maxlength="100" placeholder="year" class="form-control" id="id_year">
@@ -185,6 +192,7 @@ $.ajax({
 });
 });
 $("#works-btn").click(function(e) {
+    document.getElementById("id_text").value = '';
     document.getElementById('id_year').value = 1160;
     document.getElementById('id_title').value = '';
     document.getElementById('id_publisher').value = '';
@@ -196,6 +204,7 @@ $("#works-btn").click(function(e) {
 $("#work-create").click(function(e) {
     var fd = new FormData();
     fd.append('csrfmiddlewaretoken', getCookie('csrftoken'));
+    fd.append("text", $('#id_text').val());
     fd.append("year", $('#id_year').val());
     fd.append("title", $('#id_title').val());
     fd.append("publisher", $('#id_publisher').val());

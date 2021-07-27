@@ -27,6 +27,18 @@
         <link href="{% static 'font-awesome-4.7.0/css/font-awesome.min.css' %}" rel="stylesheet">
         <script src="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/js/standalone/selectize.min.js" integrity="sha256-+C0A5Ilqmu4QcSPxrlGpaZxJ04VjsRjKu+G82kl5UJk=" crossorigin="anonymous"></script>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/css/selectize.bootstrap3.min.css" integrity="sha256-ze/OEYGcFbPRmvCnrSeKbRTtjG4vGLHXgOqsyLFTRjg=" crossorigin="anonymous" />
+        <script language="JavaScript">
+        function last_modified() {
+                var mo = new Array('January','February','March','April','May','June','July','August','September','October','November','December')
+                var d = new Date(document.lastModified)
+                var t = new String(d.getFullYear())
+                s="Last modified: " + d.getDate() + " " + mo[d.getMonth()]+" "
+                if(t.length==2)
+                        s+="19"
+                s+=t+". "
+                document.write('<font face="Arial" size="-2">' + s + '</font>')
+        }
+        </script>
         {% block headjavascript %}{% endblock headjavascript %}
    </head>
 
@@ -51,7 +63,15 @@
               Navigate
         </a>
     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <a class="dropdown-item" href="/">Main</a>
+          <a class="dropdown-item" href="/franautvitaem/">Vitae Miracula</a>
+          <a class="dropdown-item" href="/provinces/">Order Provinces</a>
+          <a class="dropdown-item" href="/virtual_publications/">Virtual Publications</a>
+          <a class="dropdown-item" href="/Bert/">Bert</a>
+          <a class="dropdown-item" href="/links/">links</a>
+          <a class="dropdown-item" href="/author/show/">Authors</a>
           <a class="dropdown-item" href="/genre/show/">Genres</a>
+          <a class="dropdown-item" href="/genre_group/show/">Genre groups</a>
           <a class="dropdown-item" href="/date_precision/show/">Date precisions</a>
           <a class="dropdown-item" href="/work/show/">Works</a>
           <div class="dropdown-divider"></div>
@@ -65,15 +85,15 @@
         <a class="nav-link" href="/author/show/">Show Author</a>
       </li>
     </ul>
-    <nav class="navbar navbar-expand-md">
+    <nav class="navbar navbar-expand-md" id="logo">
             <a class="navbar-brand abs" href="/">
-                <img src="{% static 'logo/radboud2.png'%}" alt="">
+                <img src="{% static 'logo/radboud2.png'%}"  alt="">
             </a>
     </nav>
 
     <form class="form-inline my-2 my-lg-0" action="{% url 'author-show' %}" method="get" id="search_form">
       <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" name="q" style="Text-align: start;unicode-bidi: plaintext;">
-      <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+      <button class="btn btn-outline-success my-2 my-sm-0" type="submit" id="search_button">Search</button>
       <script>
           if(window.location.pathname.startsWith('/work/')){
               $("#search_button").html("Search works");
@@ -82,16 +102,9 @@
               $("#search_button").html("Search authors");
           }
       </script>
-      <input type="hidden" id="title" name="search_title" value="false" />
-      <input type="hidden" id="title_translation" name="search_title_translation" value="false" />
-      <input type="hidden" id="search_author" name="search_author" value="false" />
-      <input type="hidden" id="keywords" name="search_keywords" value="false" />
-      <input type="hidden" id="image_content" name="search_image_content" value="false" />
-      <input type="hidden" id="description" name="search_description" value="false" />
-      <input type="hidden" id="page_name" name="page_name" />
     </form>
   <script>
-    document.getElementById("page_name").value = window.location.pathname;
+   // document.getElementById("page_name").value = window.location.pathname;
     if(window.location.pathname.startsWith('/work/')){
         document.getElementById("search_form").action = "{% url 'work-show' %}";
     }
@@ -100,9 +113,9 @@
     }
   </script>
     </nav>
-   <div class="container">
-      <div class="row">
-        <div class="col-sm">
+   <div class="container" id="content">
+      <div class="row" id="content_child">
+        <div>
         {% block content %}{% endblock content %}
         </div>
       </div>
