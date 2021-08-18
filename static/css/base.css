@@ -126,14 +126,14 @@ table.sortable th:not(.sorttable_sorted):not(.sorttable_sorted_reverse):not(.sor
 }
 .navbar-brand.abs
 {
-    position: absolute;
+    position: relative;
     width: 100%;
     right: 684px;
     text-align: center;
 }
 #logo {
     position: absolute;
-    right: 660px;
+    right: 150px;
 }
 #content {
     position: relative;
@@ -143,12 +143,42 @@ table.sortable th:not(.sorttable_sorted):not(.sorttable_sorted_reverse):not(.sor
     position: absolute;
 }
 #letter_box {
- position: fixed;
+ position: absolute;
  width : 46px;
  height: 300px;
- left: 580px;
+ right: 1150px;
  top : 160px;
+}
+body {
+  margin: 0;
+  padding: 2rem;
+}
 
+table {
+  text-align: left;
+  position: relative;
+  border-collapse: collapse;
+}
+th, td {
+  padding: 0.25rem;
+}
+tr.red th {
+  background: red;
+  color: white;
+}
+tr.green th {
+  background: green;
+  color: white;
+}
+tr.purple th {
+  background: purple;
+  color: white;
+}
+th {
+  background: white;
+  position: sticky;
+  top: 0; /* Don't forget this, required for the stickiness */
+  box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.4);
 }
 /*
 .modal-header{

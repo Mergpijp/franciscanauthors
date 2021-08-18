@@ -145,7 +145,7 @@ def location_time_process(request, pk=None, lt=None):
         if form.is_valid():
             instance = form.save()
             author = Author.objects.get(pk=pk)
-            author.location_time_set.add(instance)
+            author.location_time_list.add(instance)
             author.save()
             if pk:
                 data['table'] = render_to_string(
@@ -410,8 +410,8 @@ def alias_unlink(request, pk=None, a=None):
     if a and pk:
         author = Author.objects.get(pk=pk)
         alias = Alias.objects.get(pk=a)
-        if alias in author.alias_set.all():
-            author.alias_set.remove(alias)
+        if alias in author.alias_list.all():
+            author.alias_list.remove(alias)
             author.save()
             data['table'] = render_to_string(
                 '_aliases_table.html',
@@ -441,23 +441,23 @@ def alias_search(request, pk=None):
             return JsonResponse(data)
 
 @login_required(login_url='/accounts/login/')
-def additional_info_process(request, pk=None, ai=None):
+def literature_process(request, pk=None, lit=None):
     data = dict()
-    obj, created = Additional_info.objects.get_or_create(pk=ai)
+    obj, created = Literature.objects.get_or_create(pk=lit)
 
-    post_mutable = {'add_comments': request.POST['add_comments']}
+    post_mutable = {'lit_text': request.POST['lit_text']}
 
-    form = Additional_info_form(post_mutable or None, instance=obj)
+    form = Literature_form(post_mutable or None, instance=obj)
 
     if request.method == 'POST':
         if form.is_valid():
             instance = form.save()
             author = Author.objects.get(pk=pk)
-            author.additional_info_list.add(instance)
+            author.literature_list.add(instance)
             author.save()
             if pk:
                 data['table'] = render_to_string(
-                    '_additional_infos_table.html',
+                    '_literatures_table.html',
                     {'author': author},
                     request=request
                 )
@@ -466,17 +466,17 @@ def additional_info_process(request, pk=None, ai=None):
     return render(request, 'error_template.html', {'form': form}, status=500)
 
 @login_required(login_url='/accounts/login/')
-def additional_info_link(request, pk=None, ai=None):
+def literature_link(request, pk=None, lit=None):
     data = dict()
     if ai and pk:
         author = Author.objects.get(pk=pk)
-        additional_info = Additional_info.objects.get(pk=ai)
-        if not additional_info in author.additional_info_list.all():
-            author.additional_info_list.add(additional_info)
+        literature = Literature.objects.get(pk=lit)
+        if not literature in author.literature_list.all():
+            author.literature_list.add(literature)
             author.save()
-            additional_info.save()
+            literature.save()
             data['table'] = render_to_string(
-                '_additional_infos_table.html',
+                '_literatures_table.html',
                 {'author': author},
                 request=request
             )
@@ -484,7 +484,7 @@ def additional_info_link(request, pk=None, ai=None):
             return JsonResponse(data)
         else:
             data['table'] = render_to_string(
-                '_additional_infos_table.html',
+                '_literatures_table.html',
                 {'author': author},
                 request=request
             )
@@ -492,16 +492,16 @@ def additional_info_link(request, pk=None, ai=None):
         return HttpResponse(409)
 
 @login_required(login_url='/accounts/login/')
-def additional_info_unlink(request, pk=None, ai=None):
+def literature_unlink(request, pk=None, lit=None):
     data = dict()
     if ai and pk:
         author = Author.objects.get(pk=pk)
-        additional_info = Additional_info.objects.get(pk=ai)
-        if additional_info in author.additional_info_set.all():
-            author.additional_info_set.remove(additional_info)
+        literature = Literature.objects.get(pk=lit)
+        if literature in author.literature_list.all():
+            author.literature_list.remove(literature)
             author.save()
             data['table'] = render_to_string(
-                '_additional_info_table.html',
+                '_literature_table.html',
                 {'author': author},
                 request=request
             )
@@ -510,20 +510,20 @@ def additional_info_unlink(request, pk=None, ai=None):
             return HttpResponse(409)
 
 @login_required(login_url='/accounts/login/')
-def additional_info_search(request, pk=None):
+def literature_search(request, pk=None):
     data = dict()
     if request.method == 'POST':
         if pk:
             if 'input' in request.POST:
                 input = request.POST['input']
-                additional_info = Additional_info.objects.filter(add_comments__icontains=input).order_by('add_comments')[:10]
+                literature = Literature.objects.filter(lit_text__icontains=input).order_by('lit_text')[:10]
             else:
-                additional_info = Additional_info.objects.none()
+                literature = Literature.objects.none()
             author = Author.objects.get(pk=pk)
             #pdb.set_trace()
             data['table'] = render_to_string(
-                '_additional_infos_candidates_table.html',
-                {'additional_infos': additional_info, 'author': author},
+                '_literatures_candidates_table.html',
+                {'literature': literature, 'author': author},
                 request=request
             )
             return JsonResponse(data)
@@ -628,7 +628,7 @@ def genre_group_process(request, pk=None, g=None):
         if form.is_valid():
             instance = form.save()
             genre = Genre.objects.get(pk=pk)
-            genre.genre_group_set.add(instance)
+            genre.genre_group_genres.add(instance)
             genre.save()
             if pk:
                 data['table'] = render_to_string(
@@ -671,8 +671,8 @@ def genre_group_unlink(request, pk=None, g=None):
     if g and pk:
         genre = Genre.objects.get(pk=pk)
         genre_group = Genre_group.objects.get(pk=g)
-        if genre_group in genre.genre_group_set.all():
-            genre.genre_group_set.remove(genre_group)
+        if genre_group in genre.genre_group_genres.all():
+            genre.genre_group_genres.remove(genre_group)
             genre.save()
             data['table'] = render_to_string(
                 '_genre_groups_table.html',
@@ -842,7 +842,7 @@ class GenreCreate(UpdateView):
         form.instance.is_stub = False
         # todo: temporal solution for double genre.
         genre = Genre.objects.get(pk=self.object.pk-1)
-        form.instance.genre_group_set.add(*genre.genre_group_set.all())
+        form.instance.genre_group_genres.add(*genre.genre_group_genres.all())
 
         if form.is_valid():
             self.object = form.save()
@@ -897,7 +897,7 @@ class GenreUpdate(UpdateView):
     def form_valid(self, form):
 
         genre = Genre.objects.get(pk=self.object.pk)
-        form.instance.genre_group_set.add(*genre.genre_group_set.all())
+        form.instance.genre_group_genres.add(*genre.genre_group_genres.all())
 
         if form.is_valid():
             self.object = form.save()
@@ -1290,7 +1290,7 @@ class SearchResultsView(ListView):
 
             search_fields = ['author_name', 'biography', 'birth', 'death', 'birth_date_precision__date_precision', 'death_date_precision__date_precision',\
                              'location_time_list__geo_location_name', 'location_time_list__date', 'location_time_list__fr_province', \
-                             'additional_info_list__add_comments', 'alias_list__alias', 'works_author_list__year', 'works_author_list__title', \
+                             'literature_list__lit_text', 'alias_list__alias', 'works_author_list__year', 'works_author_list__title', \
                              'works_author_list__publisher', 'works_author_list__location', 'works_author_list__detail_descriptions', \
                              'works_author_list__text']
             entry_query = get_query(query_string, search_fields)
@@ -1413,7 +1413,7 @@ class AuthorCreate(UpdateView):
         # todo: temporal solution for double publication.
         author = Author.objects.get(pk=self.object.pk-1)
         #if author.location_time_set.all():
-        form.instance.location_time_set.add(*author.location_time_set.all())
+        form.instance.location_time_list.add(*author.location_time_list.all())
 
         if form.is_valid():
             self.object = form.save()

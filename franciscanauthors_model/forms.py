@@ -59,8 +59,8 @@ class AuthorForm(forms.ModelForm):
             Tab('Aliases',
                     HTML("""{% include "_alias.html" %}"""),
                 ),
-            Tab('Additional infos',
-                HTML("""{% include "_additional_info.html" %}"""),
+            Tab('Literatures',
+                HTML("""{% include "_literature.html" %}"""),
                 ),
             ),
             ButtonHolder(
@@ -187,7 +187,7 @@ class AliasForm(forms.ModelForm):
         # See note here: https://docs.djangoproject.com/en/1.10/ref/contrib/admin/#django.contrib.admin.ModelAdmin.form
         fields = ('alias',)
 
-class Additional_info_form(forms.ModelForm):
+class Literature_form(forms.ModelForm):
     '''
         Crispy form for publication create/update(edit).
         Added field with buttons for inline add. Is almost the same as PublicationForm but has a submit button.
@@ -196,10 +196,10 @@ class Additional_info_form(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
-        self.fields['add_comments'].required = False
+        self.fields['lit_text'].required = False
 
         self.helper.layout = Layout(
-                    'add_comments',
+                    'lit_text',
             ButtonHolder(
                 Submit('save_add_another', 'Save and add another', css_class='btn-save btn-danger'),
                 Submit('save_and_continue_editing', 'Save and continue editing', css_class='btn-save btn-danger'),
@@ -209,9 +209,9 @@ class Additional_info_form(forms.ModelForm):
 
     # do unsubscribe
     class Meta:
-        model = Additional_info
+        model = Literature
         # See note here: https://docs.djangoproject.com/en/1.10/ref/contrib/admin/#django.contrib.admin.ModelAdmin.form
-        fields = ('add_comments',)
+        fields = ('lit_text',)
 
 class Date_precision_form(forms.ModelForm):
     '''

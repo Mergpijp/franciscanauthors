@@ -58,11 +58,11 @@ class AuthorResource(resources.ModelResource):
             author.alias_list[idx].alias = _illegal_xml_chars_RE.sub('', author.alias_list[idx].alias)
         return author.alias_list
 
-    def dehydrate_additional_info_list(self, author):
+    def dehydrate_literature_list(self, author):
         _illegal_xml_chars_RE = self.regular_expression()
-        for idx, work in enumerate(author.additional_info_list.all()):
-            author.additional_info_list[idx].add_comments = _illegal_xml_chars_RE.sub('', author.additional_info_list[idx].add_comments)
-        return author.additional_info_list
+        for idx, work in enumerate(author.literature_list.all()):
+            author.literature_list[idx].lit_text = _illegal_xml_chars_RE.sub('', author.literature_list[idx].lit_text)
+        return author.literature_list
 
     def dehydrate_location_time_list(self, author):
         _illegal_xml_chars_RE = self.regular_expression()

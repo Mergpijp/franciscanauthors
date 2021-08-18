@@ -23,6 +23,7 @@
     <thead class="thead-light">
 
     <tr>
+        <th scope="col">Alias<br/><a href="?order_by=alias&direction=asc" class="arrow up"></a> <a href="?order_by=alias&direction=desc" class="arrow down"></a></th>
         <th scope="col">Name<br/><a href="?q={{ q }}&order_by=name&direction=asc" class="arrow up"></a> <a href="?q={{ q }}&order_by=name&direction=desc" class="arrow down"></a></th>
         <th scope="col">Affiliation <br/><a href="?q={{ q }}&order_by=affiliation&direction=asc" class="arrow up"></a> <a href="?q={{ q }}&order_by=affiliation&direction=desc" class="arrow down"></a></th>
         <th scope="col">Biography <br/><a href="?q={{ q }}&order_by=biography&direction=asc" class="arrow up"></a> <a href="?q={{ q }}&order_by=biography&direction=desc" class="arrow down"></a></th>
@@ -30,7 +31,6 @@
         <th scope="col">Death<br/><a href="?order_by=death&direction=asc" class="arrow up"></a> <a href="?order_by=death&direction=desc" class="arrow down"></a> </th>
         <th scope="col">Birth date precision<br/><a href="?q={{ q }}&order_by=birth_date_precision&direction=asc" class="arrow up"></a> <a href="?q={{ q }}&order_by=birth_date_precision&direction=desc" class="arrow down"></a></th>
         <th scope="col">Death date precision<br/><a href="?q={{ q }}&order_by=death_date_precision&direction=asc" class="arrow up"></a> <a href="?q={{ q }}&order_by=death_date_precision&direction=desc" class="arrow down"></a></th>
-        <th scope="col">Alias<br/><a href="?order_by=alias&direction=asc" class="arrow up"></a> <a href="?order_by=alias&direction=desc" class="arrow down"></a></th>
         <th>Actions</th>
 
     </tr>  
@@ -39,6 +39,7 @@
     <br />
 {% for author in page_authors %}
     <tr id="authors">
+        <td>{{ author.get_truncated_detail_alias }}</td>
         <td>{{ author.get_truncated_author_name }}</td>
         <td>{{ author.get_truncated_affiliation }}</td>
         <td>{{ author.get_truncated_biography }}</td>
@@ -46,7 +47,6 @@
         <td>{{ author.get_truncated_death }}</td>
         <td>{{ author.get_truncated_birth_date_precision }}</td>
         <td>{{ author.get_truncated_death_date_precision }}</td>
-        <td>{{ author.get_truncated_detail_alias }}</td>
         <td>
             <a href="/author/{{ author.pk }}/detail_view">View</a>
             <a href="/author/{{ author.pk }}/edit?next={{ request.get_full_path }}"><span class="glyphicon glyphicon-pencil" >Edit</span></a>

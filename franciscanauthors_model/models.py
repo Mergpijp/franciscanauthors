@@ -179,9 +179,9 @@ class Author(models.Model):
         return x
 
     @property
-    def get_truncated_detail_additional_info(self):
-        ai = self.additional_info_list
-        x = ', '.join([a.add_comments for a in ai.all()])
+    def get_truncated_detail_literature_list(self):
+        lit = self.literature_list
+        x = ', '.join([l.lit_text for l in lit.all()])
         if len(x) > MAX_CHARS:
             x = x[:MAX_CHARS] + '...'
         return x
@@ -219,22 +219,23 @@ class Alias(models.Model):
     def __str__(self):
         return  self.alias
 
-class Additional_info(models.Model):
-    author = models.ForeignKey(Author, to_field='author_id', related_name='additional_info_list', on_delete=models.CASCADE, blank=True, null=True)
-    add_comments = models.TextField(max_length=200000, blank=True, null=True)
+class Literature(models.Model):
+    author = models.ForeignKey(Author, to_field='author_id', related_name='literature_list', on_delete=models.CASCADE, blank=True, null=True)
+    lit_text = models.TextField(max_length=200000, blank=True, null=True)
 
     def __str__(self):
-        if self.add_comments:
-            return  self.add_comments
+        if self.lit_text:
+            return  self.lit_text
         else:
             return ''
 
     @property
-    def get_truncated_add_comments(self):
-        x = self.add_comments
-        if len(x) > MAX_CHARS:
+    def get_truncated_lit_text(self):
+        x = self.lit_text
+        if x and len(x) > MAX_CHARS:
             x = x[:MAX_CHARS] + '...'
-        return x
+            return x
+        return ''
 
 class Location_time(models.Model):
     author = models.ForeignKey(Author, to_field='author_id', on_delete=models.CASCADE, related_name="location_time_list", blank=True, null=True)

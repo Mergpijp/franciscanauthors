@@ -78,11 +78,11 @@ urlpatterns = [
     path('alias/link/<int:pk>/<int:apk>', alias_link, name='link-alias'),
     path('alias/unlink/<int:pk>/<int:a>', alias_unlink, name='unlink-alias'),
 
-    path('additional_info/process/<int:pk>', additional_info_process, name='additional_info-process'),
-    path('additional_info/process/<int:pk>/<int:ai>', additional_info_process, name='additional_info-process'),
-    path('additional_info/search/<int:pk>', additional_info_search, name='search-additional_info'),
-    path('additional_info/link/<int:pk>/<int:ai>', additional_info_link, name='link-additional_info'),
-    path('additional_info/unlink/<int:pk>/<int:ai>', additional_info_unlink, name='unlink-additional_info'),
+    path('literature/process/<int:pk>', literature_process, name='literature-process'),
+    path('literature/process/<int:pk>/<int:lit>', literature_process, name='literature-process'),
+    path('literature/search/<int:pk>', literature_search, name='search-literature'),
+    path('literature/link/<int:pk>/<int:lit>', literature_link, name='link-literature'),
+    path('literature/unlink/<int:pk>/<int:lit>', literature_unlink, name='unlink-literature'),
 
     path('date_precision/process', date_precision_process, name='date_precision-process'),
     path('genre/process', genre_process, name='genre-process'),

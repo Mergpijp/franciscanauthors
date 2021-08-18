@@ -20,7 +20,7 @@ pk_author = 1
 pk_works = 1
 pk_literature = 1
 pk_date_precision = 1
-pk_additional_info = 1
+pk_literature = 1
 pk_alias = 1
 
 final_data = list()
@@ -184,7 +184,7 @@ for let in letters:
                 name_latin = name_latin.group(0)
             else:
                 name_latin = None
-            name_date = re.search('(fl\.|d\.)(.*)', x)
+            name_date = re.search('(fl\.|d\.|c\.|,)(.*)', x)
             if name_date:
                 substract = name_date.group(0)
                 name_date = name_date.group(2)
@@ -325,7 +325,7 @@ for let in letters:
 
         my_dict = dict()
         my_dict['model'] = 'franciscanauthors_model.alias'
-        my_dict['fields'] = {'author_id': pk_author, 'alias': name_latin}
+        my_dict['fields'] = {'author_id': pk_author, 'alias': name_latin.rstrip(',')}
         my_dict['pk'] = pk_alias
         final_data.append(my_dict)
 
@@ -338,20 +338,14 @@ for let in letters:
         final_data.append(my_dict)
 
         my_dict = dict()
-        my_dict['model'] = 'franciscanauthors_model.works'
-        my_dict['fields'] = {'author_id':pk_author ,'text': works}
-        my_dict['pk'] = pk_works
-        final_data.append(my_dict)
-
-        my_dict = dict()
-        my_dict['model'] = 'franciscanauthors_model.additional_info'
-        my_dict['fields'] = {'author_id':pk_author ,'add_comments': literature}
-        my_dict['pk'] = pk_additional_info
+        my_dict['model'] = 'franciscanauthors_model.literature'
+        my_dict['fields'] = {'author_id':pk_author ,'lit_text': literature}
+        my_dict['pk'] = pk_literature
         final_data.append(my_dict)
 
         pk_author += 1
         pk_works += 1
-        pk_additional_info += 1
+        pk_literature += 1
 
         #my_dict['fields'] = {'year': }
 
@@ -364,5 +358,5 @@ for let in letters:
         final_data.append(my_dict)
         '''
 
-with open('../../franciscanauthors_data/fixtures/fixture_5-07.json', 'w') as f:
+with open('../../franciscanauthors_data/fixtures/fixture_18-08.json', 'w') as f:
     json.dump(final_data, f, indent=2)

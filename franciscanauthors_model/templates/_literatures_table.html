@@ -1,0 +1,36 @@
+<div id="literatures-div">
+<table class="table">
+  <thead>
+  <tr>
+    <th class="text-center" scope="col">ID</th>
+    <th class="text-center" scope="col">Add comments</th>
+  </tr>
+  </thead>
+  <tbody>
+  {% for literature in author.literature_list.all %}
+    <tr>
+      <th class="text-center" scope="row">{{ literature.pk }}</th>
+      <td class="text-center">{{ literature.get_truncated_lit_text }}</td>
+      <td class="text-center">
+        <!-- Unlink work buttons -->
+        <button type="button" class="literature-unlink btn btn-sm btn-danger" data-form-url="{% url 'unlink-literature' author.pk literature.pk %}">
+          <span class="fa fa-trash"></span> Unlink
+        </button>
+      </td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+<script>
+ $( ".literature-unlink" ).click(function() {
+     var data = {
+        csrfmiddlewaretoken: getCookie('csrftoken'),
+    }
+    $.post($(this).attr('data-form-url'), data, function(data, status){
+        if(status === 'success') {
+            $("#literatures-div").html(data["table"]);
+        }
+    });
+});
+</script>
+</div>

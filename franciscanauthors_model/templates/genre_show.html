@@ -16,8 +16,8 @@
     <tr>  
         <td><a href="{% url 'author-show' %}?genre_id={{genre.pk}}">{{ genre.genre_description }}</a></td>
         <td>
-        {% if genre.genre_group_set.all %}
-            {{ genre.genre_group_set.all|join:", " }}.
+        {% if genre.genre_group_genres.all %}
+            {{ genre.genre_group_genres.all|join:", " }}.
         {% endif %}
         </td>
         <td>  
