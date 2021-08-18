@@ -22,6 +22,7 @@ pk_literature = 1
 pk_date_precision = 1
 pk_literature = 1
 pk_alias = 1
+lemma_no = 1
 
 final_data = list()
 
@@ -34,9 +35,9 @@ for let in letters:
 
         soup = BeautifulSoup(contents, 'html')
 
-        print(soup.h2)
-        print(soup.head)
-        print(soup.li)
+        #print(soup.h2)
+        #print(soup.head)
+        #print(soup.li)
     urls = []
     for url in soup.find_all('a'):
         if url.get('name') != None:
@@ -50,7 +51,7 @@ for let in letters:
     def var_bold_and_next_sentence(variable, stop, tag):
         variable = ''
         if not stop:
-            print(tag)
+            #print(tag)
             if tag and tag.name == 'p':
                 variable = tag.text
             try:
@@ -101,13 +102,15 @@ for let in letters:
                 return m.group(0)
         return None
 
+    def is_bold_heading(str):
+        return str == "literature" or str == "vitae" or str == "works"
 
     def find_content(variable, stop, tag):
         variable = ''
         while not stop:
             if isinstance(tag, bs4.element.Tag):
                 test = tag.find('b')
-                if test is None or test == -1:
+                if test is None or test == -1 or not is_bold_heading(test.text):
                     if tag.nextSibling is None:
                         variable = variable + tag.text + '\n'
                         stop = True
@@ -127,6 +130,7 @@ for let in letters:
                         break
                 elif test.name == 'b':
                     break
+
             else:
                 break
         return variable, stop, tag
@@ -142,6 +146,8 @@ for let in letters:
         literature = ''
         works_bold = ''
         works = ''
+        vitae = ''
+        vitae_bold = ''
 
         (name_bold, end, tag) = var_bold_and_next_sentence(name_bold, end, tag)
         (name, end, tag) = find_content(name, end, tag)
@@ -149,7 +155,12 @@ for let in letters:
         (literature, end, tag) = find_content(literature, end, tag)
         (works_bold, end, tag) = var_bold_and_next_sentence(works_bold, end, tag)
         (works, end, tag) = find_content(works, end, tag)
-        data.append((name_bold, name, works_bold, works, literature_bold, literature))
+        (vitae_bold, end, tag) = var_bold_and_next_sentence(vitae_bold, end, tag)
+        (vitae, end, tag) = find_content(vitae, end, tag)
+
+        data.append((name_bold, name, works_bold, works, literature_bold, literature, vitae_bold, vitae))
+        lemma_no += 1
+
 
     def helper(title):
         match = re.search('^works', title)
@@ -162,7 +173,7 @@ for let in letters:
 
     structured_data = list()
 
-    for name_bold, name, work_bold, works, literature_bold, literature in data:
+    for name_bold, name, work_bold, works, literature_bold, literature, vitea_bold, vitea in data:
 
         data_list = [name_bold, name, None, None]
         index = helper(work_bold)
@@ -171,6 +182,9 @@ for let in letters:
         index = helper(literature_bold)
         if index != -1:
             data_list[index] = literature
+        index =  helper(vitea_bold)
+        if index != -1:
+            data_list[index] = vitea
         structured_data.append(tuple(data_list))
 
     for idx, (name_bold, name, works, literature) in enumerate(structured_data):
@@ -358,5 +372,5 @@ for let in letters:
         final_data.append(my_dict)
         '''
 
-with open('../../franciscanauthors_data/fixtures/fixture_18-08.json', 'w') as f:
+with open('../../franciscanauthors_data/fixtures/fixture_18-08_03.json', 'w') as f:
     json.dump(final_data, f, indent=2)
