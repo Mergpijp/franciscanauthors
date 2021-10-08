@@ -189,7 +189,7 @@ def location_time_unlink(request, pk=None, lt=None):
         author = Author.objects.get(pk=pk)
         location_time = Location_time.objects.get(pk=lt)
         if location_time in author.location_time_list.all():
-            author.location_time_set.remove(location_time)
+            author.location_time_list.remove(location_time)
             author.save()
             data['table'] = render_to_string(
                 '_location_time_table.html',

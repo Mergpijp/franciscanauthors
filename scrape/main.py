@@ -119,7 +119,7 @@ for let in letters:
                         if isinstance(tag.nextSibling, bs4.element.Tag):
                             variable = variable + tag.text
                         else:
-                             variable = variable + tag.text + tag.nextSibling
+                            variable = variable + tag.text + tag.nextSibling
                     try:
                         tag = tag.nextSibling.nextSibling
                         if tag is None:
@@ -182,7 +182,7 @@ for let in letters:
         index = helper(literature_bold)
         if index != -1:
             data_list[index] = literature
-        index =  helper(vitea_bold)
+        index = helper(vitea_bold)
         if index != -1:
             data_list[index] = vitea
         structured_data.append(tuple(data_list))
