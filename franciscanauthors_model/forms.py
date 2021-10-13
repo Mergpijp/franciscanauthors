@@ -77,6 +77,51 @@ class AuthorForm(forms.ModelForm):
         fields = ('author_name', 'biography', 'birth', 'death', 'birth_date_precision', 'death_date_precision', \
                   'checked', 'affiliation',)
 
+class LocationTimeForm(forms.ModelForm):
+    '''
+        Crispy form for publication create/update(edit).
+        Added field with buttons for inline add. Is almost the same as PublicationForm but has a submit button.
+
+    '''
+    author = forms.ModelChoiceField(widget=ModelSelect2Widget(
+        model=Author,
+        search_fields=['author_name__icontains', ],
+        attrs={'data-minimum-input-length': 0},
+    ), queryset=Author.objects.all(), required=False)
+    date_precision = forms.ModelChoiceField(widget=ModelSelect2Widget(
+        model=Date_precision,
+        search_fields=['date_precision__icontains', ],
+        attrs={'data-minimum-input-length': 0},
+    ), queryset=Date_precision.objects.all())
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.fields['geo_location_name'].required = False
+        self.fields['fr_province'].required = False
+        self.fields['date'].required = False
+        self.fields['date_precision'].required = False
+        self.fields['author'].required = False
+
+        self.helper.layout = Layout(
+                    'author',
+                    'geo_location_name',
+                    'fr_province',
+                    'date',
+                    'date_precision',
+            ButtonHolder(
+                Submit('save_add_another', 'Save and add another', css_class='btn-save btn-danger'),
+                Submit('save_and_continue_editing', 'Save and continue editing', css_class='btn-save btn-danger'),
+                Submit('save', 'Save', css_class='btn-save btn-danger'),
+            )
+        )
+
+    class Meta:
+        model = Location_time
+        # See note here: https://docs.djangoproject.com/en/1.10/ref/contrib/admin/#django.contrib.admin.ModelAdmin.form
+        fields = ('author', 'geo_location_name', 'fr_province', 'date', 'date_precision',)
+
+
 class WorkForm(forms.ModelForm):
     '''
         Crispy form for publication create/update(edit).
@@ -129,37 +174,7 @@ class WorkForm(forms.ModelForm):
     class Meta:
         model = Works
         # See note here: https://docs.djangoproject.com/en/1.10/ref/contrib/admin/#django.contrib.admin.ModelAdmin.form
-        fields = ('text','year', 'title', 'publisher', 'location', 'detail_descriptions', 'date_precision', 'genre',)
-
-class LocationTimeForm(forms.ModelForm):
-    '''
-        Crispy form for publication create/update(edit).
-        Added field with buttons for inline add. Is almost the same as PublicationForm but has a submit button.
-
-    '''
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.helper = FormHelper()
-        self.fields['geo_location_name'].required = False
-        self.fields['fr_province'].required = False
-        self.fields['date'].required = False
-
-        self.helper.layout = Layout(
-                    'geo_location_name',
-                    'fr_province',
-                    'date',
-            ButtonHolder(
-                Submit('save_add_another', 'Save and add another', css_class='btn-save btn-danger'),
-                Submit('save_and_continue_editing', 'Save and continue editing', css_class='btn-save btn-danger'),
-                Submit('save', 'Save', css_class='btn-save btn-danger'),
-            )
-        )
-
-    # do unsubscribe
-    class Meta:
-        model = Location_time
-        # See note here: https://docs.djangoproject.com/en/1.10/ref/contrib/admin/#django.contrib.admin.ModelAdmin.form
-        fields = ('geo_location_name', 'fr_province', 'date',)
+        fields = ('text', 'year', 'title', 'publisher', 'location', 'detail_descriptions', 'date_precision', 'genre',)
 
 class AliasForm(forms.ModelForm):
     '''

@@ -225,7 +225,7 @@ class Literature(models.Model):
 
     def __str__(self):
         if self.lit_text:
-            return  self.lit_text
+            return self.lit_text
         else:
             return ''
 
@@ -235,7 +235,7 @@ class Literature(models.Model):
         if x and len(x) > MAX_CHARS:
             x = x[:MAX_CHARS] + '...'
             return x
-        return ''
+        return x
 
 class Location_time(models.Model):
     author = models.ForeignKey(Author, to_field='author_id', on_delete=models.CASCADE, related_name="location_time_list", blank=True, null=True)

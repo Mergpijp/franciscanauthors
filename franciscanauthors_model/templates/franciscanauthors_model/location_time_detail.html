@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block content %}
+</br>
+<p><b>Location times</b></p>
+<table class="table table-striped table-bordered table-sm">
+    <thead class="thead-light">
+    <tr>
+        <th>Author name</th>
+        <th>Geo Location name</th>
+        <th>Fr Province</th>
+        <th>Date</th>
+        <th>Date precision</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td>{{location_time.author.author_name}}</td>
+        <td>{{location_time.geo_location_name}}</td>
+        <td>{{location_time.fr_province}}</td>
+        <td>{{location_time.date}}</td>
+        <td>{{location_time.date_precision.date_precision}}</td>
+    </tr>
+    </tbody>
+</table>
+</br>
+{% endblock %}

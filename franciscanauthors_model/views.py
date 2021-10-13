@@ -236,11 +236,17 @@ def work_process(request, pk=None, w=None):
     data = dict()
     obj, created = Works.objects.get_or_create(pk=w)
 
-    post_mutable = {'text': request.POST['text'], 'year': request.POST['year'], 'title': request.POST['title'], \
+    if request.POST['year'] == 'None':
+        year = None
+    else:
+        year = request.POST['year']
+
+    post_mutable = {'text': obj.text, 'year': year, 'title': request.POST['title'], \
                     'publisher': request.POST['publisher'], 'location': request.POST['location'], \
                     'detail_descriptions': request.POST['detail_descriptions'], 'date_precision_id': \
                     request.POST['date_precision_id'], 'genre_id': request.POST['genre_id']}
 
+    #pdb.set_trace()
     form = WorkForm(post_mutable or None, instance=obj)
 
     if request.method == 'POST':
@@ -448,7 +454,7 @@ def literature_process(request, pk=None, lit=None):
     post_mutable = {'lit_text': request.POST['lit_text']}
 
     form = Literature_form(post_mutable or None, instance=obj)
-
+    #pdb.set_trace()
     if request.method == 'POST':
         if form.is_valid():
             instance = form.save()
@@ -468,7 +474,7 @@ def literature_process(request, pk=None, lit=None):
 @login_required(login_url='/accounts/login/')
 def literature_link(request, pk=None, lit=None):
     data = dict()
-    if ai and pk:
+    if lit and pk:
         author = Author.objects.get(pk=pk)
         literature = Literature.objects.get(pk=lit)
         if not literature in author.literature_list.all():
@@ -494,14 +500,14 @@ def literature_link(request, pk=None, lit=None):
 @login_required(login_url='/accounts/login/')
 def literature_unlink(request, pk=None, lit=None):
     data = dict()
-    if ai and pk:
+    if lit and pk:
         author = Author.objects.get(pk=pk)
         literature = Literature.objects.get(pk=lit)
         if literature in author.literature_list.all():
             author.literature_list.remove(literature)
             author.save()
             data['table'] = render_to_string(
-                '_literature_table.html',
+                '_literatures_table.html',
                 {'author': author},
                 request=request
             )
@@ -520,12 +526,13 @@ def literature_search(request, pk=None):
             else:
                 literature = Literature.objects.none()
             author = Author.objects.get(pk=pk)
-            #pdb.set_trace()
+
             data['table'] = render_to_string(
                 '_literatures_candidates_table.html',
                 {'literature': literature, 'author': author},
                 request=request
             )
+            #pdb.set_trace()
             return JsonResponse(data)
 @login_required(login_url='/accounts/login/')
 def genre_process2(request, pk=None, g=None):
@@ -925,6 +932,107 @@ class GenreUpdate(UpdateView):
                 return '/genre/show/'
             return url
 
+class LocationTimeShow(ListView):
+    model = Location_time
+    context_object_name = 'location_times'
+    genres = Location_time.objects.all()
+    paginate_by = 10
+
+    def get_template_names(self):
+        return ['location_time_show.html']
+
+    def get_ordering(self):
+        ordering = self.request.GET.get('order_by')
+        direction = self.request.GET.get('direction')
+        if ordering is not None and ordering != "" and direction is not None and direction != "":
+            if direction == 'desc':
+                ordering = '-{}'.format(ordering)
+        return ordering
+
+    def get_context_data(self, **kwargs):
+        context = super(LocationTimeShow, self).get_context_data(**kwargs)
+        order_by = self.request.GET.get('order_by')
+        if order_by is not None and order_by != "":
+            context['order_by'] = order_by
+            context['direction'] = self.request.GET.get('direction')
+        else:
+            context['order_by'] = ''
+            context['direction'] = ''
+        return context
+
+class LocationTimeCreate(CreateView):
+    '''
+    Inherits CreateView. Uses GenreForm as layout.
+    redirects to main page (show)
+    '''
+    template_name = 'authors/form.html'
+    form_class = LocationTimeForm
+    success_url = '/location_time/show/'
+    model = Location_time
+
+    def get_success_url(self):
+        """Detect the submit button used and act accordingly"""
+        if self.request.POST.get("save_add_another"):
+            return '/location_time/new/'
+        elif self.request.POST.get("save_and_continue_editing") :
+            return '/location_time/' + str(self.object.pk) + '/edit/'
+        elif self.request.POST.get("save"):
+            url = self.request.GET.get('next')
+            if self.request.GET.get('q'):
+                url += '?q=' + self.request.GET.get('q')
+            if self.request.GET.get('page'):
+                url += '&page=' + self.request.GET.get('page')
+            if self.request.GET.get('order_by'):
+                url += '&order_by=' + self.request.GET.get('order_by')
+            if self.request.GET.get('direction'):
+                url += '&direction=' + self.request.GET.get('direction')
+            if not url:
+                return '/location_time/show/'
+            return url
+
+@login_required(login_url='/accounts/login/')
+def LocationTimeDelete(request, pk):
+    '''
+    Arguments: request, pk
+    Selects LocationTime object by id equals pk.
+    Deletes the object.
+    redirects to main page. (show)
+    '''
+    location_time = Location_time.objects.get(id=pk)
+    location_time.delete()
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
+class LocationTimeUpdate(UpdateView):
+    '''
+    Inherits UpdateView uses a standard form (crispy form)
+    Uses LocationTimeForm as layout. And model Location.
+    redirects to local main page. (show)
+    '''
+    template_name = 'authors/form.html'
+    form_class = LocationTimeForm
+    model = Genre
+    context_object_name = 'location_time'
+
+
+    def get_success_url(self):
+        """Detect the submit button used and act accordingly"""
+        if self.request.POST.get("save_add_another"):
+            return '/location_time/new/'
+        elif self.request.POST.get("save_and_continue_editing") :
+            return '/location_time/' + str(self.object.pk) + '/edit/'
+        elif self.request.POST.get("save"):
+            url = self.request.GET.get('next')
+            if self.request.GET.get('q'):
+                url += '?q=' + self.request.GET.get('q')
+            if self.request.GET.get('page'):
+                url += '&page=' + self.request.GET.get('page')
+            if self.request.GET.get('order_by'):
+                url += '&order_by=' + self.request.GET.get('order_by')
+            if self.request.GET.get('direction'):
+                url += '&direction=' + self.request.GET.get('direction')
+            if not url:
+                return '/location_time/show/'
+            return url
 
 class GenreGroupShow(ListView):
     model = Genre_group
@@ -1493,6 +1601,15 @@ class AuthorDetailView(DetailView):
     '''
     model = Author
     context_object_name = 'author'
+
+class LocationTimeDetailView(DetailView):
+    '''
+    Inherits DetailView
+    Detailview for location time
+    Usess now in template thus the function get_context_data
+    '''
+    model = Location_time
+    context_object_name = 'location_time'
 
 class ThrashbinShow(ListView):
     '''

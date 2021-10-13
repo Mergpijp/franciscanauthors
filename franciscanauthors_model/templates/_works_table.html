@@ -3,12 +3,12 @@
   <thead>
   <tr>
     <th class="text-center" scope="col">ID</th>
-    <th class="text-center" scope="col">Text</th>
-    <th class="text-center" scope="col">Year</th>
     <th class="text-center" scope="col">Title</th>
+    <th class="text-center" scope="col">Year</th>
     <th class="text-center" scope="col">Publisher</th>
     <th class="text-center" scope="col">Location</th>
     <th class="text-center" scope="col">Detail descriptions</th>
+    <th class="text-center" scope="col">Text</th>
     <th class="text-center" scope="col">Date precision id</th>
     <th class="text-center" scope="col">Genre id</th>
   </tr>
@@ -17,12 +17,12 @@
   {% for work in author.works_author_list.all %}
     <tr>
       <th class="text-center" scope="row">{{ work.pk }}</th>
-      <td class="text-center">{{ work.get_truncated_text }}</td>
-      <td class="text-center">{{ work.year}}</td>
       <td class="text-center">{{ work.title }}</td>
+      <td class="text-center">{{ work.year}}</td>
       <td class="text-center">{{ work.publisher }}</td>
       <td class="text-center">{{ work.location }}</td>
       <td class="text-center">{{ work.detail_descriptions }}</td>
+      <td class="text-center">{{ work.get_truncated_text }}</td>
       <td class="text-center">{{ work.date_precision_id }}</td>
       <td class="text-center">{{ work.genre_id }}</td>
       <td class="text-center">

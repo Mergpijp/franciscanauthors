@@ -57,6 +57,12 @@ urlpatterns = [
     path('location_time/search/<int:pk>',location_time_search, name='search-location_time'),
     path('location_time/link/<int:pk>/<int:lt>', location_time_link, name='link-location_time'),
     path('location_time/unlink/<int:pk>/<int:lt>', location_time_unlink, name='unlink-location_time'),
+    path('location_time/show/', LocationTimeShow.as_view(), name='location_time-show'),
+    path('location_time/new/', login_required(LocationTimeCreate.as_view()), name='location_time-new'),
+    path('location_time/<int:pk>/edit/', login_required(LocationTimeUpdate.as_view()), name='location_time-update'),
+    path('location_time/<int:pk>/delete/', LocationTimeDelete, name='location_time-delete'),
+    path('location_time/<int:pk>/detail_view/', login_required(LocationTimeDetailView.as_view()), name='location_time-detail'),
+
     path('select2_date_precision_id/', select2_date_precision_id, name='select2-date-precision-id'),
 
     path('work/show/', SearchResultsViewWorks.as_view(), name='work-show'),

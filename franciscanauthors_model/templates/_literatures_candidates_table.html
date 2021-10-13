@@ -3,17 +3,17 @@
   <thead>
   <tr>
     <th class="text-center" scope="col">ID</th>
-    <th class="text-center" scope="col">Add comments</th>
+    <th class="text-center" scope="col">Literature text</th>
   </tr>
   </thead>
   <tbody>
-  {% for lit in literatures.all %}
+  {% for lit in literature.all %}
     <tr>
       <th class="text-center" scope="row">{{ lit.pk }}</th>
       <td class="text-center">{{ lit.get_truncated_lit_text }}</td>
       <td class="text-center">
-        <!-- Update alias buttons -->
-        <button type="button" id='init-btn-ai{{ ai.pk }}' class="btn btn-primary btn-danger" data-toggle="modal" data-target="#UpdateLiterature{{ lit.pk }}">
+        <!-- Update literature buttons -->
+        <button type="button" id='init-btn-lit{{ lit.pk }}' class="btn btn-primary btn-danger" data-toggle="modal" data-target="#UpdateLiterature{{ lit.pk }}">
           <span class="fa fa-pencil"></span>
         </button>
             <!-- Modal -->
@@ -27,7 +27,7 @@
           </div>
           <div class="modal-body">
             <div class="form-group">
-                <label for="id_lit_text{{ lit.pk }}">lit_text</label>
+                <label for="id_lit_text{{ lit.pk }}">Literature text</label>
                 <input type="text" name="name" maxlength="250" value="{{ lit.get_truncated_lit_text }}" class="form-control year" id="id_lit_text{{ lit.pk }}">
                 <div class="">
 

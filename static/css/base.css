@@ -109,6 +109,9 @@ table.sortable th:not(.sorttable_sorted):not(.sorttable_sorted_reverse):not(.sor
 #crop_image {
     object-fit: contain;
 }
+.row {
+    //display: block;
+}
 #test {
     text-align: start;
     unicode-bidi: plaintext;
